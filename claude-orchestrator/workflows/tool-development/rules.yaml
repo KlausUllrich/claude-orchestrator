@@ -1,0 +1,67 @@
+# Tool Development Workflow Rules
+# For developing the Claude Orchestrator itself
+
+name: Tool Development Workflow
+version: 0.1.0
+description: Workflow for dogfooding - developing the orchestrator using itself
+
+# Core mandatory rules
+core_rules:
+  user_approval:
+    - "User approval required for marking any task complete"
+    - "User approval required for all implementation decisions"
+    - "No automated commits or releases without explicit permission"
+    - "Cannot declare tasks fixed or completed without user confirmation"
+  
+  session_management:
+    - "Read session-handover-next.md at session start"
+    - "Track current work context in SQLite"
+    - "Create checkpoint based on config triggers"
+    - "Create session handover on normal shutdown"
+    - "Read last checkpoint if recovering from unexpected end"
+  
+  documentation:
+    - "Update TODO.md only with user approval"
+    - "Create agent feedback for significant work"
+    - "Update Documentation_Index.md when adding new docs"
+    - "Use agent-feedback/ for transient documentation"
+
+# Development practices
+development_practices:
+  dogfooding:
+    - "Always run Context Guardian during development"
+    - "Test new features using the tool itself"
+    - "Use orchestrator commands for own development"
+  
+  quality:
+    - "Verify completeness before claiming done"
+    - "Test features before marking complete"
+    - "Document decisions in SQLite"
+    - "Track issues encountered"
+
+# Session behavior
+session_behavior:
+  on_start:
+    - "Read: docs/status/session-handover-next.md"
+    - "Check: Last checkpoint from SQLite"
+    - "Display: Current TODO status"
+    - "Start: Context Guardian monitoring"
+  
+  during_session:
+    - "Log: Decisions to SQLite with timestamps"
+    - "Track: Issues and resolutions"
+    - "Monitor: Context usage via Context Guardian"
+    - "Suggest: Checkpoints based on config"
+  
+  on_end:
+    - "Create: Session-end checkpoint (automatic)"
+    - "Update: Session handover document"
+    - "Report: Session statistics"
+    - "Clean: Temporary files if configured"
+
+# Interaction style
+interaction_rules:
+  - "Brief summaries, not walls of text"
+  - "Ask for confirmation before major changes"
+  - "Show checkpoint suggestions, don't force them"
+  - "Report context usage when requested"

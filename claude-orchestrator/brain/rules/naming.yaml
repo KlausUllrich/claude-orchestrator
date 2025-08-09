@@ -1,0 +1,62 @@
+# Naming Convention Rules
+# 
+# This is the SINGLE SOURCE OF TRUTH for naming conventions.
+# All hooks, agents, and tools read from this file.
+# To change naming rules, edit this file, not the code.
+
+priority: critical
+
+description: |
+  Enforce consistent naming across the project.
+  Use kebab-case (lowercase with hyphens) for all files and folders.
+  
+  WHY: Cross-platform compatibility (Windows, Mac, Linux)
+  WHY: Command-line friendly (no spaces or special chars)
+  WHY: Industry best practices
+
+rules:
+  - All files and folders must use lowercase letters only
+  - Use hyphens (-) as word separators (kebab-case)
+  - No underscores except for Python special methods
+  - No spaces in file or folder names
+  - No special characters except hyphens and dots
+
+exceptions:
+  # Standard conventions (universally recognized)
+  - README.md
+  - LICENSE
+  - CHANGELOG.md
+  - CLAUDE.md  # Claude-specific convention
+  
+  # Python conventions
+  - __init__
+  - __main__
+  - __pycache__
+  
+  # System files
+  - .gitignore
+  - .cleanup
+
+patterns:
+  valid:
+    - "^[a-z0-9]+(-[a-z0-9]+)*$"  # folder names
+    - "^[a-z0-9]+(-[a-z0-9]+)*\\.[a-z]+$"  # file names
+  
+  invalid:
+    - ".*[A-Z].*"  # uppercase letters
+    - ".*_.*"      # underscores (except exceptions)
+    - ".* .*"      # spaces
+    - ".*[^a-z0-9-.].*"  # special characters
+
+examples:
+  good:
+    - context-guardian.py
+    - session-handover.md
+    - agent-feedback/
+    - long-term-memory/
+  
+  bad:
+    - Context_Guardian.py  # uppercase and underscore
+    - session handover.md  # space
+    - longTermMemory/      # camelCase
+    - AGENT-FEEDBACK/      # uppercase

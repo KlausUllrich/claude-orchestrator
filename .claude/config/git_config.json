@@ -1,0 +1,42 @@
+{
+  "git_expert": {
+    "auto_commit": true,
+    "auto_push": false,
+    "request_confirmation": true,
+    "explain_commands": true,
+    "create_backup_branches": true,
+    "commit_style": "conventional",
+    "safety_checks": {
+      "check_large_files": true,
+      "check_sensitive_data": true,
+      "max_file_size_mb": 50
+    }
+  },
+  "issue_tracker": {
+    "auto_create_issues": false,
+    "group_related_todos": true,
+    "include_code_context": true,
+    "default_labels": ["todo"],
+    "assign_to_self": false,
+    "create_milestones": false,
+    "scan_patterns": {
+      "todo": "TODO:",
+      "fixme": "FIXME:",
+      "bug": "BUG:",
+      "hack": "HACK:",
+      "note": "NOTE:",
+      "optimize": "OPTIMIZE:"
+    }
+  },
+  "workflow": {
+    "run_post_cleanup": true,
+    "suggest_commit_after_session": true,
+    "create_session_branches": false,
+    "branch_naming": {
+      "feature": "feat/",
+      "bugfix": "fix/",
+      "docs": "docs/",
+      "refactor": "refactor/"
+    }
+  }
+}

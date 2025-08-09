@@ -1,0 +1,60 @@
+# Core Project Rules
+
+priority: critical
+
+description: |
+  Fundamental rules that must always be followed.
+  These are injected into the conversation periodically.
+
+rules:
+  - Check context usage before adding large content
+  - Update TODOs immediately when tasks are completed
+  - Write transient reports to agent-feedback/, not Docs/
+  - Use kebab-case for all new files and folders
+  - Extract key findings from agent reports to permanent docs
+
+context_management:
+  warning_levels: [70, 80, 90]
+  checkpoint_at: 80
+  emergency_handover_at: 90
+  
+  rules:
+    - Monitor token usage continuously
+    - Warn user at 70% capacity
+    - Create checkpoint at 80% capacity
+    - Initiate emergency handover at 90% capacity
+
+documentation_hygiene:
+  rules:
+    - No duplicate information across documents
+    - Keep documents focused on single topics
+    - Update index when adding new documents
+    - Archive old handovers after having read them when new session starts
+
+agent_behavior:
+  rules:
+    - Agents must categorize output as permanent or transient
+    - Detailed reports go to agent-feedback/
+    - Key findings go to permanent documentation
+    - Always include timestamp in reports
+
+file_organization:
+  rules:
+    - Python files in appropriate tool directories
+    - YAML rules in brain/rules/
+    - Templates in resource-library/
+    - Test files in development/ (during development only)
+
+git_hygiene:
+  rules:
+    - Never commit agent-feedback/ directory
+    - Never commit .orchestrator/state/
+    - Never commit *.db files
+    - Keep .gitignore updated
+
+session_management:
+  rules:
+    - One session folder per day in agent-feedback/
+    - Create handover before ending session
+    - Update TODO status before ending session
+    - Check context status before starting new work

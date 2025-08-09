@@ -1,0 +1,44 @@
+# Claude Code tracking files
+.claude/session_files.json
+.claude/pending_cleanup.json
+.claude/hooks_debug.log
+.claude/archive/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+tmp/
+temp/
+
+# Claude Orchestrator transient data
+agent-feedback/
+.orchestrator/state/
+*.db

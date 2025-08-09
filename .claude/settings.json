@@ -1,0 +1,68 @@
+{
+  "model": "claude-opus-4-1-20250805",
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date)] PreToolUse Write triggered\" >> .claude/hooks_debug.log 2>&1"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/track_file.py write 2>> .claude/hooks_debug.log"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date)] PreToolUse Edit triggered\" >> .claude/hooks_debug.log 2>&1"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/track_file.py edit 2>> .claude/hooks_debug.log"
+          }
+        ]
+      },
+      {
+        "matcher": "MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date)] PreToolUse MultiEdit triggered\" >> .claude/hooks_debug.log 2>&1"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/track_file.py edit 2>> .claude/hooks_debug.log"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"[$(date)] Stop hook triggered\" >> .claude/hooks_debug.log 2>&1"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/session_end.py 2>> .claude/hooks_debug.log",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

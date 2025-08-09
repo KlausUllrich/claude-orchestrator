@@ -1,0 +1,67 @@
+# Tool Development Workflow Configuration
+# Checkpoint and component settings
+
+name: Tool Development Config
+version: 0.1.0
+
+# Checkpoint configuration
+checkpoint_rules:
+  trigger_on:
+    timer:
+      interval: 30  # minutes
+      mode: suggestion  # false | true | suggestion
+      message: "It's been 30 minutes. Would you like to create a checkpoint?"
+    
+    major_step_completed: 
+      mode: suggestion
+      message: "Major step completed. Should I create a checkpoint?"
+    
+    user_approval: 
+      mode: false  # Disabled - too frequent
+      message: "Task approved. Create checkpoint?"
+    
+    minor_step_completed: 
+      mode: false  # Disabled - too frequent
+      message: "Minor step done. Checkpoint?"
+    
+    auto: 
+      mode: false  # LLM decides when appropriate
+      message: "Good checkpoint opportunity. Proceed?"
+    
+    session_end: 
+      mode: true  # Only automatic checkpoint
+      message: "Creating session-end checkpoint..."
+    
+    context_threshold:
+      percent: 70
+      mode: suggestion
+      message: "Context at {percent}%. I recommend creating a checkpoint. Proceed?"
+
+  checkpoint_content:
+    - current_task        # What we're working on
+    - completed_items     # What was finished (with approval)
+    - pending_decisions   # Awaiting user input
+    - active_issues       # Problems encountered
+    - next_steps          # What to do next
+    - context_percentage  # Current token usage
+
+# Active components for this workflow
+active_components:
+  context_guardian: true    # Always monitor token usage
+  rule_enforcer: true       # Apply workflow rules
+  agent_feedback: true      # Create transient docs
+  sqlite_memory: true       # Track session state
+
+# Session configuration
+session_config:
+  auto_start_guardian: true
+  show_token_usage_on_start: true
+  create_handover_on_end: true
+  cleanup_temp_files: false  # Keep for debugging
+
+# Tool-specific settings
+tool_development:
+  dogfood_mode: true  # Use orchestrator for its own development
+  track_modified_files: true
+  log_decisions: true
+  require_user_approval: true

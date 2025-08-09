@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-08-06T19:42:12.442344",
+  "changes": "?? TODO.md",
+  "suggested_message": "feat: Update session tracking hooks, agent definitions (3h 36m session)\n\n- Added 3 new files\n- Modified 2 files",
+  "session_data": {
+    "session_start": "2025-08-06T16:05:29.462569",
+    "files": [
+      {
+        "timestamp": "2025-08-06T16:14:14.439833",
+        "action": "edit",
+        "file": "/home/klaus/game-projects/claude-template/.claude/agents/llm-project-manager.md"
+      },
+      {
+        "timestamp": "2025-08-06T16:15:22.435444",
+        "action": "write",
+        "file": "/home/klaus/game-projects/claude-template/.claude/agents/session-end-manager.md"
+      },
+      {
+        "timestamp": "2025-08-06T16:16:09.366776",
+        "action": "write",
+        "file": "/home/klaus/game-projects/claude-template/prime.md"
+      },
+      {
+        "timestamp": "2025-08-06T19:36:07.242037",
+        "action": "edit",
+        "file": "/home/klaus/game-projects/claude-template/.claude/hooks/post_cleanup.py"
+      },
+      {
+        "timestamp": "2025-08-06T19:40:36.780623",
+        "action": "write",
+        "file": "/home/klaus/game-projects/claude-template/TODO.md"
+      }
+    ],
+    "session_completed": "2025-08-06T19:42:12.437841",
+    "cleanup_performed": true
+  },
+  "request": "review_and_commit"
+}

@@ -1,0 +1,18 @@
+# Claude Orchestrator Default Configuration
+context:
+  max_tokens: 200000
+  warning_levels: [70, 80, 90]
+  checkpoint_level: 80
+
+memory:
+  short_term_db: "short-term-memory/session_state.db"
+  long_term_db: "long-term-memory/knowledge_base.db"
+  
+monitoring:
+  enabled: true
+  interval: 60  # seconds
+
+project_types:
+  - unity
+  - love2d
+  - web

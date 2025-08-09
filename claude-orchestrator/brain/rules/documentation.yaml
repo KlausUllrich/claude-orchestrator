@@ -1,0 +1,80 @@
+# Documentation Placement Rules
+#
+# This file defines WHERE different types of documentation go.
+# It's the single source of truth for doc organization.
+# All agents and hooks read these rules to decide where to write.
+
+priority: critical
+
+description: |
+  Rules for determining where documentation should be placed.
+  Separates permanent project knowledge from transient agent feedback.
+  
+  KEY PRINCIPLE: 
+  - Permanent knowledge → docs/ (git tracked)
+  - Temporary reports → agent-feedback/ (git ignored)
+  - Tool state → .orchestrator/ (git ignored)
+
+rules:
+  - Permanent documentation goes in Docs/
+  - Transient agent reports go in agent-feedback/
+  - Operational data goes in .orchestrator/
+  - Tool documentation stays in claude-orchestrator/
+
+placement:
+  # Permanent documentation
+  vision: Docs/Design/
+  architecture: Docs/Technical/
+  specification: Docs/Technical/
+  api: Docs/Technical/
+  handbook: Docs/Workflow/
+  process: Docs/Workflow/
+  todo: Docs/Workflow/
+  
+  # Session documentation
+  handover: Docs/Status/
+  milestone: Docs/Status/
+  
+  # Transient reports (agent-feedback/)
+  report: agent-feedback/session-{date}/
+  findings: agent-feedback/session-{date}/
+  analysis: agent-feedback/session-{date}/
+  status-update: agent-feedback/session-{date}/
+  reorganization: agent-feedback/session-{date}/
+  
+  # Operational data
+  state: .orchestrator/state/
+  memory: .orchestrator/memory/
+  checkpoint: .orchestrator/state/checkpoints/
+
+transient_indicators:
+  - completed
+  - reorganized
+  - checked
+  - analyzed
+  - found
+  - detected
+  - scanned
+  - processed
+
+permanent_indicators:
+  - architecture
+  - design
+  - specification
+  - contract
+  - interface
+  - protocol
+  - standard
+  - reference
+
+session_naming:
+  format: session-YYYY-MM-DD
+  description: One folder per day, all sessions accumulate
+  examples:
+    - session-2025-01-11
+    - session-2025-01-12
+  
+lifecycle:
+  transient_retention: 7  # days to keep agent-feedback
+  checkpoint_retention: 30  # days to keep checkpoints
+  auto_cleanup: true
