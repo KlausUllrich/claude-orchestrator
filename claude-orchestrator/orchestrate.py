@@ -45,6 +45,14 @@ def main():
     workflow_parser.add_argument("action", choices=["activate", "deactivate", "status"])
     workflow_parser.add_argument("name", nargs="?", help="Workflow name")
     
+    # Handover command
+    handover_parser = subparsers.add_parser("handover", help="Create session handover document")
+    handover_parser.add_argument("--summary", help="Session summary", default="")
+    
+    # Session command
+    session_parser = subparsers.add_parser("session", help="Manage session state")
+    session_parser.add_argument("action", choices=["start", "status"], help="Session action")
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -131,6 +139,83 @@ def main():
                 print(f"Active workflow: {workflow}")
             else:
                 print("No active workflow")
+    
+    elif args.command == "handover":
+        # Simple command that just shows session info
+        # The LLM will handle the actual handover creation
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("handover_manager", 
+                                                      Path(__file__).parent / "brain" / "handover-manager.py")
+        handover_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(handover_module)
+        manager = handover_module.HandoverManager()
+        
+        if args.summary == "info":
+            # Just show session information
+            print(manager.get_info_summary())
+        elif args.summary == "gather":
+            # Get raw data for LLM analysis
+            import json
+            info = manager.gather_session_info()
+            print(json.dumps(info, indent=2, default=str))
+        elif args.summary == "save":
+            # Save handover content (reading from stdin)
+            import sys
+            content = sys.stdin.read()
+            path = manager.archive_and_save_handover(content)
+            print(f"✅ Handover saved to: {path}")
+        else:
+            # Default: show info and instructions
+            print("📝 Handover Helper Tool")
+            print("=" * 60)
+            print("\nThis tool helps gather session information for handover creation.")
+            print("\nUsage:")
+            print("  python orchestrate.py handover info    - Show session summary")
+            print("  python orchestrate.py handover gather  - Get JSON data for analysis")
+            print("  python orchestrate.py handover save    - Save handover (from stdin)")
+            print("\nThe LLM should use these commands to create comprehensive handovers.")
+    
+    elif args.command == "session":
+        if args.action == "start":
+            print("🚀 Starting new session...")
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("handover_manager", 
+                                                          Path(__file__).parent / "brain" / "handover-manager.py")
+            handover_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(handover_module)
+            manager = handover_module.HandoverManager()
+            
+            # Read the handover
+            content = manager.read_handover()
+            
+            if content:
+                print("\n" + "="*60)
+                print("📋 Previous Session Handover:")
+                print("="*60)
+                # Show first part of handover (required reading and summary)
+                lines = content.split('\n')
+                for i, line in enumerate(lines):
+                    print(line)
+                    if i > 50 and "## Next Session Goals" in line:
+                        # Show goals section
+                        for j in range(i, min(i+20, len(lines))):
+                            if lines[j].startswith("##") and j > i:
+                                break
+                            print(lines[j])
+                        break
+                
+                print("\n" + "="*60)
+                print("✅ Session started. Review the full handover at: docs/status/handover-next.md")
+                print("📚 Don't forget to read the required documents listed in the handover!")
+            else:
+                print("ℹ️ No previous handover found. Starting fresh session.")
+                print("📚 Please read docs/read-first.md for required documentation.")
+        
+        elif args.action == "status":
+            print("📊 Current session status")
+            # Could add more session status info here
+            print("   Use 'python orchestrate.py handover' to create a handover")
+            print("   Use 'python orchestrate.py session start' to begin from handover")
 
 if __name__ == "__main__":
     main()
