@@ -10,7 +10,7 @@ These documents MUST be read at the start of every session to understand the sys
 3. **`QUICK-REFERENCE.md`** - How the orchestrator works (simple version)
 4. **`docs/design/vision.md`** - Project goals and approach
 5. **`docs/technical/architecture.md`** - How components fit together
-6. **`claude-orchestrator/brain/rules/README.md`** - Rules system operation
+6. **`claude-orchestrator/brain/rules/rules-readme.md`** - Rules system operation
 7. **`docs/technical/known-limitations.md`** - What doesn't work and workarounds
 8. **`CLAUDE.md`** - Core interaction rules for Claude
 

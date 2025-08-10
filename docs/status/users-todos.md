@@ -4,13 +4,15 @@
 
 ## 🔴 IMMEDIATE PRIORITY (Next Session)
 
-### The ONE Thing: Make Commands Work
-- [ ] Create `brain/handover-manager.py` with create/read functions
-- [ ] Extend `orchestrate.py` with handover, session commands
-- [ ] Make `/handover` and `/session-start` commands executable
-- [ ] Test full flow: session-start → work → handover
+### The ONE Thing: Fix Session-End Workflow
+- [ ] Fix path issues in session-end command (cd claude-orchestrator error)
+- [ ] Fix handover command syntax (info vs --summary info)
+- [ ] Implement proper sub-agent parallel execution with Task tool
+- [ ] Test full flow: session-start → work → session-end → handover
 
-### After Commands Work
+### After Session-End Works
+- [ ] Create TODO tracking system using database
+- [ ] Integrate session TODOs with user-todos.md
 - [ ] Create `short-term-memory/task-tracker.py`
 - [ ] Implement `/task-add`, `/task-list`, `/task-complete` commands
 - [ ] Rename session_state.db → session-context.db
@@ -27,12 +29,15 @@
 - [ ] Create rules to keep the keep the project folder clean, up-to-date, maintain location-guidance and maintain a single-source-of-truth
 
 ### Session Handover Enhancement
+- [x] Added validation task for handover structure
+- [x] Added pre-save checklist to template
+- [x] Added enforcement markers to template sections
+- [x] Updated handover workflow with validation phase
+- [ ] Test handover validation in actual workflow
 - [ ] Include core rules (CLAUDE.md) in session start
 - [ ] Include documentation-index in session start
 - [ ] Include active workflow rules in session start
 - [ ] Create emergency handover for context overflow
-- [ ] Create handover templates for different scenarios
-- [ ] Add "required reading" section automation
 - [ ] Add session metrics tracking (duration, files modified, etc.)
 
 ### Workflow Files
@@ -51,6 +56,8 @@
 - [ ] Document findings and implement solution
 
 ### Validation & Checking System
+- [x] Created handover_validation_check.md task document
+- [ ] Optimize all documentation task files for efficiency
 - [ ] Create `tools/doc-validator.py` - Check document format/location
 - [ ] Create `tools/rule-validator.py` - Check rule compliance
 - [ ] Create contradiction detector for documentation
@@ -114,6 +121,7 @@
 - [ ] Add configuration override mechanism
 
 ### Multi-Agent Coordination
+- [ ] Implement code analysis tasks similar to doc tasks
 - [ ] Design agent communication protocols
 - [ ] Implement message-queue.db fully
 - [ ] Create agent spawning system
@@ -195,6 +203,20 @@
 
 ## ✅ Completed Items
 
+### Session 2025-08-10 17:30 (Current)
+- [x] Implemented /session-end command with agent-driven architecture
+- [x] Created maintenance-agent for task execution
+- [x] Created database-updater-agent for intelligent savepoints
+- [x] Created handover_validation_check.md task
+- [x] Added validation phase to handover workflow
+- [x] Added pre-save checklist and enforcement markers to template
+- [x] Discovered critical bugs in session-end implementation
+
+### Session 2025-08-10 11:30
+- [x] Redesigned handover system to be LLM-driven
+- [x] Created brain/handover-manager.py with helper functions
+- [x] Made /handover and /session-start commands executable
+
 ### Session 2025-01-11
 - [x] Created claude-orchestrator foundation with Context Guardian
 - [x] Built rule injection system for brain/rule_enforcer.py
@@ -237,6 +259,6 @@
 - [ ] Documentation complete
 
 ---
-*Last Updated: 2025-08-09 21:45*
+*Last Updated: 2025-08-10 17:45*
 *Next Review: After making commands work*
 *Location: docs/status/todo.md (with handover documents)*

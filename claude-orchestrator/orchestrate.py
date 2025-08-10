@@ -51,7 +51,10 @@ def main():
     
     # Session command
     session_parser = subparsers.add_parser("session", help="Manage session state")
-    session_parser.add_argument("action", choices=["start", "status"], help="Session action")
+    session_parser.add_argument("action", choices=["start", "status", "end"], help="Session action")
+    session_parser.add_argument("--no-cleanup", action="store_true", help="Skip maintenance analysis")
+    session_parser.add_argument("--no-git", action="store_true", help="Skip git operations")
+    session_parser.add_argument("--emergency", action="store_true", help="Emergency mode - handover only")
     
     args = parser.parse_args()
     
@@ -216,6 +219,39 @@ def main():
             # Could add more session status info here
             print("   Use 'python orchestrate.py handover' to create a handover")
             print("   Use 'python orchestrate.py session start' to begin from handover")
+        
+        elif args.action == "end":
+            print("🏁 Session End Process")
+            print("=" * 60)
+            
+            if args.emergency:
+                print("⚠️ EMERGENCY MODE - Creating handover only")
+                print("\nPlease use the /handover command to create and save a handover.")
+                print("This will preserve critical session information.")
+                return
+            
+            print("\n📋 Session end workflow will:")
+            print("1. ⚡ Launch parallel tasks (handover + analysis)")
+            print("2. 📝 Execute /handover command workflow")
+            print("3. 📊 Review maintenance findings")
+            print("4. ✨ Apply approved changes")
+            print("5. 💾 Update documentation and database")
+            if not args.no_git:
+                print("6. 📦 Commit and push changes")
+            
+            print("\n" + "=" * 60)
+            print("ℹ️  The LLM orchestrator will now:")
+            print("   - Start the /handover command process")
+            if not args.no_cleanup:
+                print("   - Launch maintenance analysis sub-agents")
+            print("   - Guide you through each approval step")
+            print("\n⚠️  This is a helper tool. The actual workflow")
+            print("    is orchestrated by the LLM using available commands.")
+            
+            # Return success to indicate the command structure is ready
+            # The LLM will handle the actual orchestration
+            print("\n✅ Session end framework ready.")
+            print("   The LLM should now execute the workflow as documented.")
 
 if __name__ == "__main__":
     main()

@@ -84,10 +84,23 @@ Following the template structure:
    - What needs to be done before ending
    - Commit reminders and guidelines
 
-### Phase 3: User Review
+### Phase 3: Validation Check
+
+1. **Run Validation Task**
+   - Use maintenance-agent with handover_validation_check task
+   - Verify all sections present
+   - Check for placeholders
+   - Ensure completeness
+
+2. **Fix Any Issues**
+   - If validation fails, fix identified problems
+   - Re-run validation until passes
+   - Only proceed when structure is correct
+
+### Phase 4: User Review
 
 1. **Present Complete Handover**
-   - Show the full document to user
+   - Show the validated document to user
    - Highlight key sections
    - Explain reasoning for priorities
 
@@ -99,8 +112,9 @@ Following the template structure:
 3. **Incorporate Changes**
    - Update handover based on feedback
    - Ensure all user concerns are addressed
+   - Re-validate if structural changes made
 
-### Phase 4: Save and Archive
+### Phase 5: Save and Archive
 
 ```bash
 # Save the approved handover
@@ -139,6 +153,16 @@ The LLM should gather from:
 
 ## Quality Checklist
 
+### Pre-Save Validation
+Must pass before saving:
+- [ ] Filename is exactly `handover-next.md`
+- [ ] All 12 required sections present
+- [ ] No template placeholders remain
+- [ ] Critical LLM context filled
+- [ ] Previous handover archived
+- [ ] Validation task passes
+
+### Content Quality
 A good handover:
 - [ ] Tells the complete story of the session
 - [ ] Explains WHY things happened, not just what
@@ -147,4 +171,5 @@ A good handover:
 - [ ] Links to relevant documents
 - [ ] Is readable by someone unfamiliar with the session
 - [ ] Follows the template structure
+- [ ] Preserves all TODOs from session
 - [ ] Has user approval

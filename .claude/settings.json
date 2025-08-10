@@ -54,11 +54,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date)] Stop hook triggered\" >> .claude/hooks_debug.log 2>&1"
+            "command": "[ -f .claude/hooks_debug.log ] && echo \"[$(date)] Stop hook triggered\" >> .claude/hooks_debug.log 2>&1 || true"
           },
           {
             "type": "command",
-            "command": "python3 .claude/hooks/session_end.py 2>> .claude/hooks_debug.log",
+            "command": "[ -f .claude/hooks/session_end.py ] && python3 .claude/hooks/session_end.py 2>> .claude/hooks_debug.log || true",
             "timeout": 60
           }
         ]
