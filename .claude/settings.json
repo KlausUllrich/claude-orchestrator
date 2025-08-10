@@ -13,11 +13,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date)] PreToolUse Write triggered\" >> .claude/hooks_debug.log 2>&1"
+            "command": "echo \"[$(date)] PreToolUse Write triggered\" >> ../.claude/hooks_debug.log 2>&1"
           },
           {
             "type": "command",
-            "command": "python3 .claude/hooks/track_file.py write 2>> .claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py write 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -26,11 +26,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date)] PreToolUse Edit triggered\" >> .claude/hooks_debug.log 2>&1"
+            "command": "echo \"[$(date)] PreToolUse Edit triggered\" >> ../.claude/hooks_debug.log 2>&1"
           },
           {
             "type": "command",
-            "command": "python3 .claude/hooks/track_file.py edit 2>> .claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -39,11 +39,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo \"[$(date)] PreToolUse MultiEdit triggered\" >> .claude/hooks_debug.log 2>&1"
+            "command": "echo \"[$(date)] PreToolUse MultiEdit triggered\" >> ../.claude/hooks_debug.log 2>&1"
           },
           {
             "type": "command",
-            "command": "python3 .claude/hooks/track_file.py edit 2>> .claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       }
@@ -54,11 +54,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f .claude/hooks_debug.log ] && echo \"[$(date)] Stop hook triggered\" >> .claude/hooks_debug.log 2>&1 || true"
+            "command": "[ -f ../.claude/hooks_debug.log ] && echo \"[$(date)] Stop hook triggered\" >> ../.claude/hooks_debug.log 2>&1 || true"
           },
           {
             "type": "command",
-            "command": "[ -f .claude/hooks/session_end.py ] && python3 .claude/hooks/session_end.py 2>> .claude/hooks_debug.log || true",
+            "command": "[ -f ../.claude/hooks/session_end.py ] && python3 ../.claude/hooks/session_end.py 2>> ../.claude/hooks_debug.log || true",
             "timeout": 60
           }
         ]

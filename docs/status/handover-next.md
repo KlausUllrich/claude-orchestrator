@@ -223,10 +223,16 @@ python orchestrate.py handover --summary info
 ## 🚨 CRITICAL CONTEXT FOR LLM
 
 **Working Directory**: You are in `/home/klaus/game-projects/claude-orchestrate/claude-orchestrator/`
+**Path Context**: From orchestrator dir, docs are at `../docs/` NOT `docs/`
 **Never cd**: Don't use `cd claude-orchestrator` - you're already there
 **Command Syntax**: Use `handover --summary info` not `handover info`
 **Agent Launching**: Must use Task tool with proper parameters
 **Test First**: Test each fix before moving to next
+
+**Correct Paths from orchestrator directory**:
+- Handover: `../docs/status/handover-next.md`
+- Archive: `../docs/status/archive/`
+- TODOs: `../docs/status/users-todos.md`
 
 **Failed Test Output** (for reference):
 1. Path error: `/bin/bash: line 1: cd: claude-orchestrator: No such file or directory`
