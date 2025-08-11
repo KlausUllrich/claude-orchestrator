@@ -90,33 +90,90 @@ Complete full session-end workflow with all phases
 
 ## ⚠️ Critical Warnings & Known Issues
 
+### NEW CRITICAL ISSUES DISCOVERED (End of Session)
+
+#### 1. Handover Command Hangs
+**Issue**: `handover --summary` starts but then does nothing - appears to hang
+**Impact**: Cannot continue while sub-agents run - blocks workflow
+**Solution Needed**: Investigate async/parallel execution limitations
+
+#### 2. Workflow Order Problems  
+**Issue**: Main agent cannot continue while orchestrating sub-agents
+**Current Flow**: Trying parallel (handover + agents) - doesn't work
+**New Flow Needed**: 
+1. Complete handover FIRST
+2. THEN present list of maintenance tasks
+3. Let user choose which to run (selective or all)
+
+#### 3. Task Tool Display Confusing
+**Issue**: Shows as "Task: analyse unreferenced documents" - not clear it's a sub-agent
+**Solution**: Change to "Sub-Agent Assignment: (Maintenance Agent) Analyze unreferenced documents"
+
+#### 4. No Recommendations on Findings
+**Issue**: Main agent didn't make recommendations on maintenance findings
+**Expected**: Should suggest which fixes are safe/important
+
+#### 5. Path Finding Problems
+**Issue**: Can't reliably find orchestrate.py from different directories
+**Solution Needed**: Find project root (where .gitignore is) and use relative paths from there
+**Never use absolute paths - breaks portability
+
+#### 6. Handover Save Syntax Wrong in Docs
+**Issue**: Documentation shows `python orchestrate.py handover save` 
+**Correct**: `python orchestrate.py handover --summary save`
+**Impact**: Confusing errors when following documentation
+
 ### Working Directory Management
 **Issue**: Environment shows `/docs` but need to be in `/claude-orchestrator`  
 **Solution**: Always `cd /home/klaus/game-projects/claude-orchestrate/claude-orchestrator` first
-
-### Handover Save Mechanism
-**CRITICAL**: Never create temp files!
-```bash
-# WRONG:
-Write handover-TIMESTAMP.md
-Archive old manually
-Copy to handover-next.md
-
-# CORRECT:
-cat handover_content.md | python orchestrate.py handover save
-```
 
 ### Agent Launching
 **Remember**: orchestrate.py only prints instructions - Claude must launch Task tools
 
 ## 📋 Task Breakdown for Next Session
 
-### Task 1: Test Complete Workflow
-1. Run `/session-end` 
-2. Launch multiple maintenance agents
-3. Complete handover with proper save
-4. Review all findings
-5. Execute approved fixes
+### PRIORITY FIXES (Must do first)
+
+#### Fix 1: Redesign Workflow Order
+**Problem**: Parallel execution doesn't work - main agent blocks
+**Solution**:
+1. Change session-end to sequential: handover FIRST, then agents
+2. Add user selection menu for which maintenance tasks to run
+3. Update orchestrate.py and session-end.md documentation
+
+#### Fix 2: Implement Project Root Finding
+**Problem**: Can't find orchestrate.py reliably
+**Solution**:
+1. Create find_project_root() function that looks for .gitignore
+2. Use relative paths from project root
+3. Never hardcode absolute paths
+
+#### Fix 3: Fix Handover Save Documentation
+**Problem**: Wrong syntax documented everywhere
+**Solution**:
+1. Search all docs for "handover save"
+2. Replace with "handover --summary save"
+3. Update examples in handover.md and session-end.md
+
+#### Fix 4: Improve Task Tool Display
+**Problem**: Unclear when sub-agents are launching
+**Solution**:
+1. Modify Task tool description format
+2. Use: "Sub-Agent Assignment: (Agent Type) Task Description"
+3. Make it clear this is delegated work
+
+#### Fix 5: Add Recommendations to Findings
+**Problem**: No guidance on what to fix
+**Solution**:
+1. Main agent should analyze findings
+2. Categorize as: Safe/Risky/Optional
+3. Make default recommendations
+
+### Task 1: Test Complete Workflow (After fixes)
+1. Run `/session-end` with new sequential flow
+2. Test user selection of maintenance tasks
+3. Verify handover completes before agents
+4. Confirm recommendations appear
 
 ### Task 2: Enable More Maintenance Tasks
 Currently only running `unreferenced_documents_check`. Enable:
