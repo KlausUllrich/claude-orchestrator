@@ -19,7 +19,7 @@ The handover follows the template at `claude-orchestrator/resource-library/docum
 
 2. **System State Check**
    ```bash
-   cd claude-orchestrator && python orchestrate.py handover info
+   cd claude-orchestrator && python orchestrate.py handover --summary info
    ```
    - Git status and uncommitted changes
    - Modified files and their state
@@ -123,7 +123,7 @@ Following the template structure:
 
 ```bash
 # Save the approved handover
-echo "[handover content]" | python orchestrate.py handover save
+cat handover_content | python orchestrate.py handover --summary save
 ```
 
 ## Key Principles

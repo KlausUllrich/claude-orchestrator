@@ -15,48 +15,53 @@ python orchestrate.py session end
 ```
 This will output the workflow configuration and instructions.
 
-### Step 2: Launch Parallel Tasks
-After getting configuration, immediately launch:
-
-#### A. Handover Creation
-Execute the `/handover` command workflow
-
-#### B. Maintenance Analysis Agents
-For each maintenance task (starting with just `unreferenced_documents_check` for testing):
-
-Use the Task tool to launch maintenance agent:
-```
-Task tool parameters:
-- description: "Analyze [task_name]"
-- subagent_type: "general-purpose"
-- prompt: 
-  "You are a maintenance agent for the claude-orchestrator project.
-   
-   Read the agent template at: 
-   /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/agents/maintenance-agent/maintenance-agent.md
-   
-   Then execute the task document at:
-   /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/documents/documentation-tasks/[task_name].md
-   
-   Mode: ANALYZE
-   
-   Create a findings report and save it to:
-   /home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/findings-[task_name]-[timestamp].md"
-```
-
-### Step 3: Complete Handover
+### Step 2: Complete Handover First (SEQUENTIAL)
 1. Gather session information using `python orchestrate.py handover --summary info`
 2. Create comprehensive handover document following template
-3. Get user approval
-4. Archive old handover BEFORE saving new one
-5. Save to `docs/status/handover-next.md`
+3. Get user approval for the handover
+4. Save using: `cat handover_content | python orchestrate.py handover --summary save`
+5. Confirm handover is saved to `docs/status/handover-next.md`
 
-### Step 4: Review Maintenance Findings
-Once agents complete:
-1. Read each findings report
-2. Present findings conversationally (one task at a time)
-3. Get user decisions on what to fix
-4. Save decisions to JSON file
+### Step 3: Maintenance Task Selection
+After handover is complete:
+1. Ask user: "Would you like to run maintenance checks?"
+2. If yes, explain you'll go through them one at a time
+3. Available tasks (currently just `unreferenced_documents_check` for testing)
+
+### Step 4: Process Maintenance Tasks ONE BY ONE
+**CRITICAL**: Never launch multiple agents before reviewing results!
+
+For EACH task (one at a time):
+1. Tell user: "Running [task name] check..."
+2. Launch ONE sub-agent using Task tool:
+   ```
+   Task tool parameters:
+   - description: "Sub-Agent Assignment: (Maintenance) [task name]"
+   - subagent_type: "general-purpose"
+   - prompt: 
+     "You are a maintenance agent for the claude-orchestrator project.
+      
+      Read the agent template at: 
+      /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/agents/maintenance-agent/maintenance-agent.md
+      
+      Then execute the task document at:
+      /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/documents/documentation-tasks/[task_name].md
+      
+      Mode: ANALYZE
+      
+      Create a findings report and save it to:
+      /home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/findings-[task_name]-[timestamp].md"
+   ```
+3. Wait for agent to complete and return results
+4. Review findings with user:
+   - Analyze and categorize findings (safe/risky/optional)
+   - Make recommendations on what to fix
+   - Explain what each finding means
+5. Get user's specific decisions
+6. If fixes approved, save decisions to JSON and launch fix-mode agent
+7. Report what was done
+8. Ask: "Would you like to run the next maintenance check?"
+9. If yes, repeat from step 1 with next task
 
 ### Step 5: Execute Approved Fixes
 For each approved fix:
@@ -96,9 +101,10 @@ If not using --no-git flag:
 
 **IMPORTANT**: This command requires Claude to:
 1. Run Python script to get configuration
-2. **Actually launch Task tools** (not just print instructions)
-3. Coordinate between multiple parallel agents
-4. Handle the interactive handover process
+2. Complete handover FIRST (sequential, not parallel)
+3. Process maintenance tasks ONE AT A TIME with user review
+4. **Actually launch Task tools** (not just print instructions)
+5. Make recommendations on findings before getting user decisions
 
 The Python script (`orchestrate.py session end`) only provides configuration and instructions. Claude must execute the actual workflow using Task tools and other commands.
 
@@ -111,34 +117,35 @@ Claude:
 1. Runs: python orchestrate.py session end
    (Gets configuration and task list)
 
-2. Launches in parallel:
-   - /handover command process
-   - Task tool for unreferenced_documents_check
-   - Task tool for other maintenance tasks
+2. Creates and saves handover with user approval
 
-3. Completes handover with user approval
+3. Asks: "Would you like to run maintenance checks?"
 
-4. Reviews maintenance findings with user
+4. If yes, for EACH task:
+   - Launches ONE Task tool for that specific task
+   - Waits for results
+   - Reviews findings with recommendations
+   - Gets user decisions
+   - Executes fixes if approved
+   - Asks about next task
 
-5. Executes approved fixes
+5. Updates documentation and database
 
-6. Updates documentation and database
-
-7. Commits changes if approved
+6. Commits changes if approved
 ```
 
 ## Known Issues & Workarounds
 
-### Issue: Task Tool Parallel Execution
-The Task tool may not support true parallel execution. If parallel launch fails:
-- Launch tasks sequentially instead
-- Start with handover first, then maintenance tasks
+### RESOLVED: Parallel Execution Blocking
+**Previous Issue**: Task tool blocked when running parallel agents
+**Solution**: Redesigned workflow to be sequential:
+- Handover completes first
+- Maintenance tasks run one at a time with review
 
-### Issue: Handover Save
-Ensure handover is actually saved by:
-1. Archiving old handover FIRST
-2. Writing new handover to handover-next.md
-3. Confirming file exists after save
+### Issue: Handover Save Syntax
+**Correct syntax**: `python orchestrate.py handover --summary save`
+**NOT**: `python orchestrate.py handover save`
+The `--summary` flag is required!
 
 ## Testing Checklist
 

@@ -15,12 +15,21 @@ from pathlib import Path
 import subprocess
 from typing import Dict, List, Optional, Tuple, Any
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+from utils import find_project_root, find_orchestrate_py
+
 class SessionEndManager:
     """Session end coordinator with decision tracking for agent communication"""
     
     def __init__(self):
-        self.project_root = Path(__file__).parent.parent.parent
-        self.orchestrator_root = Path(__file__).parent.parent
+        # Use utility to find project root reliably
+        self.project_root = find_project_root()
+        if not self.project_root:
+            # Fallback to old method
+            self.project_root = Path(__file__).parent.parent.parent
+        
+        self.orchestrator_root = self.project_root / "claude-orchestrator"
         self.db_path = self.orchestrator_root / "short-term-memory" / "session_state.db"
         self.reports_dir = self.project_root / "docs" / "status" / "session-reports"
         self.reports_dir.mkdir(parents=True, exist_ok=True)

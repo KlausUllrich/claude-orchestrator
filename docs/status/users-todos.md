@@ -4,14 +4,34 @@
 
 ## 🔴 IMMEDIATE PRIORITY (Next Session)
 
-### The ONE Thing: Fix Critical Session-End Issues
-- [x] Fix path issues in session-end command (cd claude-orchestrator error) - DONE
-- [x] Fix handover command syntax (info vs --summary info) - DONE
-- [ ] **CRITICAL: No sub-agents are being launched!** Must fix Task tool integration
-- [ ] Fix handover to archive old version BEFORE editing (not after)
-- [ ] Fix handover title to include current timestamp
-- [ ] Fix workflow to present full handover document (not step-by-step edits)
-- [ ] Fix: Comments must not stop the entire workflow
+### The ONE Thing: Research & Implement Agent Parallelization
+- [ ] **CRITICAL: Fully understand __evaluation/ folder contents**
+  - [ ] Read and analyze all files in claude-orchestrator/__evaluation/
+  - [ ] Study SIMPLE_SOLUTIONS.md for parallelization strategies
+  - [ ] Review simple_parallel_coordinator.py implementation
+  - [ ] Examine parallel_task_hook.py for hook integration
+  - [ ] Test minimal_parallel_mcp.py approach
+  - [ ] Analyze game_dev_examples.py for practical use cases
+- [ ] **Discuss findings in depth with user**
+  - [ ] Present analysis of each solution approach
+  - [ ] Compare pros/cons of different methods
+  - [ ] Get user input on preferred implementation
+- [ ] **Design implementation strategy**
+  - [ ] Choose between coordinator, hook, or MCP approach
+  - [ ] Plan integration with existing orchestrator
+  - [ ] Design testing framework for parallel execution
+- [ ] **Test parallel vs sequential performance**
+  - [ ] Create benchmark scenarios
+  - [ ] Measure execution time differences
+  - [ ] Document results and recommendations
+
+### Session-End Workflow Fixes (Completed This Session)
+- [x] Fix path issues in session-end command - DONE
+- [x] Fix handover command syntax - DONE
+- [x] Fix workflow order (sequential, one-by-one) - DONE THIS SESSION
+- [x] Implement project root finding function - DONE THIS SESSION
+- [x] Add recommendations logic for findings - DONE THIS SESSION
+- [x] Improve sub-agent display format - DONE THIS SESSION
 - [ ] Test with single task only: unreferenced_documents_check
 - [ ] Test full flow: session-start → work → session-end → handover
 

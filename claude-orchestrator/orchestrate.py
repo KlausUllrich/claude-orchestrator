@@ -270,18 +270,47 @@ def main():
                 "git_enabled": not args.no_git
             }
             
-            print("\n📋 PHASE 1: PARALLEL LAUNCH")
-            print("Launch these tasks CONCURRENTLY using the Task tool:")
-            print("\n1. HANDOVER CREATION:")
+            print("\n📋 PHASE 1: HANDOVER CREATION (SEQUENTIAL)")
+            print("Complete the handover FIRST before any other tasks:")
+            print("\n1. Get session information:")
             print("   Command: python orchestrate.py handover --summary info")
-            print("   Then create comprehensive handover and get user approval")
+            print("2. Create comprehensive handover document")
+            print("3. Get user approval for handover")
+            print("4. Save handover using:")
+            print("   cat handover_content | python orchestrate.py handover --summary save")
             orchestration_data["phases"].append("handover_creation")
             
+            print("\n" + "="*60)
+            print("📋 PHASE 2: MAINTENANCE TASK SELECTION")
+            print("="*60)
+            
             if not args.no_cleanup:
-                print("\n2. MAINTENANCE ANALYSIS:")
-                print("   ⚠️ CRITICAL: You MUST actually launch Task tools - not just print instructions!")
-                print("   Use Task tool with subagent_type='general-purpose' for each task:")
-                print("   Each task needs its own Task tool invocation")
+                print("After handover is complete, present maintenance options:")
+                print("\nAvailable maintenance tasks:")
+                for i, task in enumerate(task_files, 1):
+                    print(f"  {i}. {task.replace('_', ' ').title()}")
+                
+                print("\nAsk user: 'Would you like to run maintenance checks?'")
+                print("If yes, explain you'll go through them one at a time")
+                orchestration_data["phases"].append("task_selection")
+                
+                print("\n" + "="*60)
+                print("📋 PHASE 3: MAINTENANCE ANALYSIS (ONE BY ONE)")
+                print("="*60)
+                print("⚠️ CRITICAL: Process tasks ONE AT A TIME with user review between each!")
+                print("\nFor EACH task (starting with first, then asking about next):")
+                print("1. Tell user: 'Running [task name] check...'")
+                print("2. Launch ONE sub-agent:")
+                print("   - Use description: 'Sub-Agent Assignment: (Maintenance) [task name]'")
+                print("   - Use Task tool with subagent_type='general-purpose'")
+                print("3. Wait for agent to complete and return results")
+                print("4. Review findings with user")
+                print("5. Make recommendations (safe/risky/optional)")
+                print("6. Get user decisions")
+                print("7. Execute approved fixes if any")
+                print("8. Ask: 'Would you like to run the next check?'")
+                print("9. If yes, repeat from step 1 with next task")
+                print("\n⚠️ NEVER launch multiple agents before reviewing results!")
                 
                 for i, task in enumerate(task_files, 1):
                     task_instruction = {
@@ -294,6 +323,8 @@ def main():
                     }
                     
                     print(f"\n   Task {i}: {task}")
+                    print(f"   When running this specific task:")
+                    print(f"   Task tool description: 'Sub-Agent Assignment: (Maintenance) {task.replace('_', ' ')}'")
                     print(f"   AGENT_INSTRUCTION_ANALYZE:")
                     print(f"   {json.dumps(task_instruction, indent=6)}")
                     print(f"\n   Task tool prompt should be:")
@@ -302,28 +333,23 @@ def main():
                     print(f"   Mode: ANALYZE. Save findings to: {task_instruction['report_path']}'")
                 orchestration_data["phases"].append("maintenance_analysis")
             
-            print("\n" + "="*60)
-            print("📋 PHASE 2: HANDOVER COMPLETION")
-            print("="*60)
-            print("1. Complete handover process with user")
-            print("2. Save approved handover")
-            print("3. THEN check if any maintenance tasks are ready")
-            orchestration_data["phases"].append("handover_completion")
-            
             if not args.no_cleanup:
                 print("\n" + "="*60)
-                print("📋 PHASE 3: CONVERSATIONAL REVIEW")
+                print("📋 PHASE 4: REVIEW WITH RECOMMENDATIONS")
                 print("="*60)
-                print("\n🎯 CRITICAL: Present findings ONE TASK AT A TIME!")
-                print("\nFor EACH completed task:")
-                print("1. Read the task's findings report")
-                print("2. Present findings conversationally (explain what each means)")
-                print("3. Discuss options with user")
-                print("4. Get specific decisions for each item")
-                print("5. Write decisions to JSON file")
-                print("6. Launch fix-mode agent if approved")
-                print("7. Report what was done")
-                print("8. ONLY THEN move to next task")
+                print("\n🎯 This happens WITHIN Phase 3 for each task!")
+                print("\nWhen reviewing EACH task's findings:")
+                print("1. Analyze the findings and categorize:")
+                print("   - ✅ Safe to fix (won't break anything)")
+                print("   - ⚠️ Needs review (could affect functionality)")
+                print("   - 💡 Optional (nice to have)")
+                print("2. Present with YOUR recommendations:")
+                print("   'Found X issues. Here's my analysis:'")
+                print("   - Explain what each finding means")
+                print("   - Recommend which to fix")
+                print("   - Explain any risks")
+                print("3. Get user's specific decisions")
+                print("4. Save decisions to JSON if fixes approved")
                 
                 print("\n⚠️ NEVER:")
                 print("  - Present all tasks at once")
@@ -340,7 +366,7 @@ def main():
                 orchestration_data["phases"].append("execute_fixes")
             
             print("\n" + "="*60)
-            print("📋 PHASE 4: DECISION TRACKING")
+            print("📋 PHASE 5: DECISION TRACKING")
             print("="*60)
             print("\nFor EACH task that needs fixes:")
             print("1. Create decision file at:")
@@ -373,7 +399,7 @@ def main():
             
             if not args.no_git:
                 print("\n" + "="*60)
-                print("📋 PHASE 5: GIT COMMIT")
+                print("📋 PHASE 6: GIT COMMIT")
                 print("="*60)
                 print("After all fixes are complete:")
                 print("1. Show git status")

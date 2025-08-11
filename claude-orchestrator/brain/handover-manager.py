@@ -18,6 +18,8 @@ import subprocess
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))
+from utils import find_project_root
 
 class HandoverManager:
     """Provides helper functions for handover management"""
@@ -29,8 +31,11 @@ class HandoverManager:
             project_root: Root directory of the project (defaults to finding it)
         """
         if project_root is None:
-            # Navigate up from brain/ to claude-orchestrator/ to project root
-            self.project_root = Path(__file__).parent.parent.parent
+            # Use utility to find project root reliably
+            self.project_root = find_project_root()
+            if not self.project_root:
+                # Fallback to old method
+                self.project_root = Path(__file__).parent.parent.parent
         else:
             self.project_root = Path(project_root)
             
