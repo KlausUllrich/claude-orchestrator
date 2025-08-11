@@ -161,6 +161,30 @@ def main():
             import json
             info = manager.gather_session_info()
             print(json.dumps(info, indent=2, default=str))
+        elif args.summary == "validate":
+            # Validate handover content (reading from stdin)
+            import sys
+            content = sys.stdin.read()
+            validation = manager.validate_handover_structure(content)
+            
+            if validation["valid"]:
+                print("✅ Handover structure validation PASSED")
+                print(f"   Found {validation['section_count']} required sections")
+            else:
+                print("❌ Handover structure validation FAILED")
+                if validation["errors"]:
+                    print("\n🔴 Errors (must fix):")
+                    for error in validation["errors"]:
+                        print(f"   - {error}")
+                if validation["warnings"]:
+                    print("\n⚠️ Warnings:")
+                    for warning in validation["warnings"]:
+                        print(f"   - {warning}")
+            
+            # Exit with error code if validation failed
+            if not validation["valid"]:
+                sys.exit(1)
+                
         elif args.summary == "save":
             # Save handover content (reading from stdin)
             import sys
@@ -173,9 +197,10 @@ def main():
             print("=" * 60)
             print("\nThis tool helps gather session information for handover creation.")
             print("\nUsage:")
-            print("  python orchestrate.py handover info    - Show session summary")
-            print("  python orchestrate.py handover gather  - Get JSON data for analysis")
-            print("  python orchestrate.py handover save    - Save handover (from stdin)")
+            print("  python orchestrate.py handover info     - Show session summary")
+            print("  python orchestrate.py handover gather   - Get JSON data for analysis")
+            print("  python orchestrate.py handover validate - Validate handover structure (from stdin)")
+            print("  python orchestrate.py handover save     - Save handover (from stdin)")
             print("\nThe LLM should use these commands to create comprehensive handovers.")
     
     elif args.command == "session":

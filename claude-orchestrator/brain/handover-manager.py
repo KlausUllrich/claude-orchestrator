@@ -83,6 +83,12 @@ class HandoverManager:
         """
         timestamp = datetime.now().strftime("%Y%m%d-%H%M")
         
+        # Pre-save check: Ensure we have content to save
+        if not content or len(content.strip()) < 50:
+            print("⚠️ WARNING: Attempting to save empty or very short handover!", file=sys.stderr)
+            print(f"   Content length: {len(content) if content else 0} characters", file=sys.stderr)
+            # Don't raise error yet - try to save and check after
+        
         # Archive existing handover if it exists
         self._archive_existing_handover(timestamp)
         
@@ -98,6 +104,33 @@ class HandoverManager:
         with open(archive_path, 'w') as f:
             f.write(content)
         
+        # CRITICAL: Post-save sanity check
+        if not handover_path.exists():
+            raise IOError(f"❌ CRITICAL: Handover file was not created at {handover_path}")
+        
+        actual_size = handover_path.stat().st_size
+        if actual_size < 100:
+            # Try to restore from archive if main save failed
+            if actual_size == 0 and archive_path.exists():
+                print("⚠️ CRITICAL: Main handover is empty! Checking archive...", file=sys.stderr)
+                archive_size = archive_path.stat().st_size
+                if archive_size > 100:
+                    print("✅ Archive has content. Restoring from archive...", file=sys.stderr)
+                    import shutil
+                    shutil.copy2(archive_path, handover_path)
+                    actual_size = handover_path.stat().st_size
+                else:
+                    raise IOError(f"❌ CRITICAL: Both handover and archive are empty! Save failed completely.")
+            else:
+                print(f"⚠️ WARNING: Handover saved but very small ({actual_size} bytes)", file=sys.stderr)
+        
+        # Final verification
+        with open(handover_path, 'r') as f:
+            saved_content = f.read()
+            if len(saved_content) < 100:
+                raise IOError(f"❌ CRITICAL: Handover file exists but content is too short ({len(saved_content)} chars)")
+        
+        print(f"✅ Handover saved successfully: {actual_size} bytes")
         return str(handover_path)
     
     def read_handover(self) -> Optional[str]:
@@ -115,6 +148,116 @@ class HandoverManager:
             content = f.read()
         
         return content
+    
+    def validate_handover_structure(self, content: str) -> Dict[str, Any]:
+        """Quick validation of handover structure
+        
+        This is a lightweight check before running the full validation task.
+        
+        Args:
+            content: Handover content to validate
+            
+        Returns:
+            Dictionary with validation results
+        """
+        validation = {
+            "valid": True,
+            "errors": [],
+            "warnings": [],
+            "section_count": 0
+        }
+        
+        # Check minimum length
+        if len(content) < 500:
+            validation["errors"].append("Handover too short (< 500 chars)")
+            validation["valid"] = False
+        
+        # Check required sections with descriptive names
+        required_sections = [
+            ("# Session Handover:", "Main handover title"),
+            ("## 🔴 MANDATORY READS", "Mandatory Reads section"),
+            ("## 📍 Current Development State", "Current Development State section"),
+            ("## ⚠️ Critical Warnings", "Critical Warnings & Known Issues section"),
+            ("## 🔗 Additional References", "Additional References section"),
+            ("## 💭 Context & Decisions", "Context & Decisions section"),
+            ("## ⚡ Quick Reference", "Quick Reference section"),
+            ("## 🏁 Session End Checklist", "Session End Checklist section")
+        ]
+        
+        # Check sections that can have variations
+        goal_sections = ["## 🎯 Next Session Goal", "## 🎯 This Session Goal"]
+        if not any(section in content for section in goal_sections):
+            validation["errors"].append("Missing section: Session Goal (should be '## 🎯 Next Session Goal' or '## 🎯 This Session Goal')")
+            validation["valid"] = False
+        else:
+            validation["section_count"] += 1
+            
+        task_sections = ["## 📋 Task Breakdown", "## 📋 Session Task Breakdown"]
+        if not any(section in content for section in task_sections):
+            validation["errors"].append("Missing section: Task Breakdown (should be '## 📋 Task Breakdown' or '## 📋 Session Task Breakdown')")
+            validation["valid"] = False
+        else:
+            validation["section_count"] += 1
+        
+        # Check other required sections
+        for section_marker, section_name in required_sections:
+            if section_marker not in content:
+                validation["errors"].append(f"Missing section: {section_name} ('{section_marker}')")
+                validation["valid"] = False
+            else:
+                validation["section_count"] += 1
+        
+        # Check for template placeholders with context
+        placeholder_checks = [
+            ("[TODO]", "unfilled TODO placeholder"),
+            ("[project name]", "project name placeholder - should be actual project name"),
+            ("[YYYY-MM-DD]", "date placeholder - should be actual date like 2025-08-11"),
+            ("[timestamp]", "timestamp placeholder - should be actual time like 14:30"),
+            ("[Brief Session Focus]", "session focus placeholder - should describe actual session work"),
+            ("[Document Path]", "document path placeholder - should be actual file path"),
+            ("[...]", "ellipsis placeholder - should have actual content"),
+            ("XXXX", "placeholder X's - should be replaced with actual content")
+        ]
+        
+        for placeholder, description in placeholder_checks:
+            if placeholder in content:
+                validation["warnings"].append(f"Found {description}: '{placeholder}'")
+                validation["valid"] = False
+        
+        # Check YAML frontmatter
+        if not content.startswith("---"):
+            validation["errors"].append("Missing YAML frontmatter (document should start with '---')")
+            validation["valid"] = False
+        else:
+            # Check YAML has required fields
+            yaml_section = content.split("---")[1] if "---" in content else ""
+            if "title:" not in yaml_section:
+                validation["warnings"].append("YAML frontmatter missing 'title' field")
+            if "project:" not in yaml_section:
+                validation["warnings"].append("YAML frontmatter missing 'project' field")
+            if "summary:" not in yaml_section:
+                validation["warnings"].append("YAML frontmatter missing 'summary' field")
+        
+        # Check for critical content elements
+        if "MANDATORY READS" in content:
+            mandatory_section = content[content.find("MANDATORY READS"):content.find("##", content.find("MANDATORY READS") + 1) if "##" in content[content.find("MANDATORY READS") + 1:] else len(content)]
+            if "/docs/read-first.md" not in mandatory_section and "docs/read-first.md" not in mandatory_section:
+                validation["warnings"].append("Mandatory Reads section missing reference to 'docs/read-first.md'")
+            if "CLAUDE.md" not in mandatory_section:
+                validation["warnings"].append("Mandatory Reads section missing reference to 'CLAUDE.md'")
+        
+        # Check for working directory specification
+        if "Working directory:" not in content and "cd " not in content:
+            validation["warnings"].append("No working directory specified (should specify project directory)")
+        
+        # Additional quality checks
+        if content.count("##") < 8:
+            validation["warnings"].append(f"Only {content.count('##')} section headers found (expected at least 10)")
+        
+        if "⚠️" not in content and "WARNING" not in content.upper():
+            validation["warnings"].append("No warnings section found (every handover should note potential issues)")
+        
+        return validation
     
     def _archive_existing_handover(self, timestamp: str):
         """Archive the existing handover-next.md if it exists"""

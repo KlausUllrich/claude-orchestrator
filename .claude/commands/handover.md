@@ -87,44 +87,85 @@ Following the template structure:
    - What needs to be done before ending
    - Commit reminders and guidelines
 
-### Phase 3: Validation Check
+### Phase 3: Validation Check (BEFORE User Review)
 
-1. **Run Validation Task**
-   - Use maintenance-agent with handover_validation_check task
-   - Verify all sections present
-   - Check for placeholders
-   - Ensure completeness
+**CRITICAL: Validate BEFORE showing to user to ensure quality!**
 
-2. **Fix Any Issues**
+1. **Quick Structure Validation**
+   ```bash
+   # First, run quick validation check
+   echo "$HANDOVER_DRAFT" | python orchestrate.py handover --summary validate
+   ```
+   - If validation fails, fix errors and re-validate
+   - Only proceed when structure validation passes
+
+2. **Full Validation Task (Optional for Complex Sessions)**
+   - For important sessions, also run the full validation task:
+   - Launch sub-agent with handover_validation_check task:
+   ```
+   Task Description: "Sub-Agent: Validate handover completeness"
+   Prompt: "Act as maintenance-agent. Read the agent template and execute the 
+           handover_validation_check task. Validate the handover draft for:
+           - All required sections present and complete
+           - No template placeholders remaining
+           - Content accuracy and completeness
+           - Proper context preservation"
+   ```
+
+3. **Fix Any Issues Found**
    - If validation fails, fix identified problems
    - Re-run validation until passes
-   - Only proceed when structure is correct
+   - Only proceed to user review when ALL validations pass
 
-### Phase 4: User Review
+4. **Validation Checklist Summary**
+   ✅ Structure validation passed (via orchestrate.py)
+   ✅ All 12 required sections present
+   ✅ No template placeholders remain
+   ✅ Minimum content length met (500+ chars)
+   ✅ YAML frontmatter present
+   ✅ Working directory specified
+   ✅ Mandatory reads section complete
 
-1. **Present Complete Handover**
-   - **CRITICAL**: Show the FULL handover document at once - NOT step-by-step edits
-   - Present the entire validated document to user
-   - Highlight key sections after showing full document
-   - Explain reasoning for priorities
+### Phase 4: User Review (After Validation Passes)
+
+1. **Present Validated Handover**
+   - **CRITICAL**: Show the FULL validated handover at once - NOT step-by-step edits
+   - Start with: "I've created and validated the session handover. Here it is for your review:"
+   - Present the entire document
+   - After showing, highlight: "Key points for next session: [brief summary]"
    - **NEVER** interrupt workflow if user comments - incorporate feedback and continue
 
 2. **Get Feedback**
+   - Ask: "Does this handover capture everything important from our session?"
    - User can approve as-is
    - Request specific adjustments
    - Add additional context
 
 3. **Incorporate Changes**
    - Update handover based on feedback
-   - Ensure all user concerns are addressed
-   - Re-validate if structural changes made
+   - If structural changes made, re-run validation
+   - Get final approval before saving
 
-### Phase 5: Save and Archive
+### Phase 5: Save and Archive (After User Approval)
+
+**CRITICAL: Ensure content is properly piped to prevent data loss!**
 
 ```bash
-# Save the approved handover
+# Save the approved handover (content MUST be piped in)
 cat handover_content | python orchestrate.py handover --summary save
+
+# Or use echo for direct content:
+echo "$HANDOVER_CONTENT" | python orchestrate.py handover --summary save
+
+# NEVER run without content:
+# python orchestrate.py handover --summary save  # ❌ THIS WILL SAVE EMPTY FILE!
 ```
+
+**Post-Save Verification:**
+- System will automatically check file was saved with content
+- Will warn if file is empty or too small
+- Will attempt recovery from archive if main save failed
+- Will report final status with file size
 
 ## Key Principles
 

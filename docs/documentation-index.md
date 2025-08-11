@@ -47,6 +47,9 @@ This project is using its own documentation system for development (dogfooding).
 #### Workflow Documents
 - Currently empty - workflow documentation moved to Status/TODO.md
 
+#### Template Documents
+- [Session_Handover_Template.md](claude-orchestrator/resource-library/documents/handovers/Session_Handover_Template.md)
+
 ### Transient Documentation (agent-feedback/)
 
 Located in `agent-feedback/` folder (not in git):
@@ -63,7 +66,7 @@ Located in `claude-orchestrator/` folder:
 - [README.md](../claude-orchestrator/README.md) - Tool overview and quick start
 - [development/](../claude-orchestrator/development/) - Development notes (to be removed for distribution)
 
-## 📦 Project Files (Test Environment)
+## 📦 Project Core Files (Test Environment)
 
 These files are from the original claude-template and used for testing:
 - `CLAUDE.md` - Claude interaction rules

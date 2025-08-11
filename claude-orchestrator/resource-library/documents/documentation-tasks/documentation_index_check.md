@@ -1,8 +1,7 @@
 ---
-project: AncientDefenders
-type: documentation verification task
+project: [project name]
 title: Documentation Index Check Task
-version: 2025-01-11 02:45
+version: [YYYY-MM-DD hh:mm]
 document type: Task
 summary:
   - Autonomous task to verify documentation index
@@ -21,12 +20,12 @@ tags: [task, verification, index, documentation, autonomous]
 1. This entire task document
 2. [CLAUDE.md](../../CLAUDE.md) - User interaction preferences
 3. [EssentialWorkflowRules.md](../Rules/EssentialWorkflowRules.md) - Core workflow rules
-4. [DocumentationIndex.md](../../Docs/KnowledgeBase/DocumentationIndex.md) - The index to verify
+4. [DocumentationIndex.md](../../docs/documentation-index.md) - The index to verify
 
 ## 📋 Task Definition
 
 ### Purpose
-Verify that DocumentationIndex.md accurately reflects all documentation in the project, serving as a reliable navigation hub with correct categorization, paths, and descriptions.
+Verify that documentation index accurately reflects all documentation in the project, serving as a reliable navigation hub with correct categorization, paths, and descriptions.
 
 ### Scope
 Check the documentation index for:
@@ -38,28 +37,31 @@ Check the documentation index for:
 
 ### Exclusions
 **Skip indexing files in:**
-- `/Archive/` directories
+- `/archive/` directories
 - `/old/` directories
-- `/Klaus/` directories
-- `/Source/` directories (code files)
+- `/src/` directories (code files)
 - `.git/` directories
 
 ## 🔍 Verification Checklist
 
 ### 1. Index Completeness
-- [ ] Every .md file in indexed directories appears in DocumentationIndex.md
+- [ ] Every .md file in indexed directories appears in documentation-index.md
 - [ ] No entries in index point to non-existent files
-- [ ] All 7 document types represented with sections
 - [ ] Special documents (README.md, CLAUDE.md) listed
 - [ ] No duplicate entries
 
 ### 2. Categorization Accuracy
 - [ ] Documents listed under correct type section:
-  - **Design** → Vision, UX, Game Design
-  - **Technical** → Architecture, Implementation
-  - **Status** → Progress, Session Handovers
-  - **Workflow** → Rules, Processes
-  - **Template** → Document templates
+- [ ] **Getting Started** → read-first.md
+- [ ] **Design** → Vision, UX, Game Design
+- [ ] **Technical** → Architecture, Implementation
+- [ ] **Status** → Progress, Session Handovers
+- [ ] **Workflow** → Rules, Processes
+- [ ] **Templates** → Document templates
+- [ ] **Transient** → agent-feedback
+- [ ] **Tool** → claude-orchestrator
+- [ ] **Project Core Files** → not related to claude-orchestrator, but to the project
+
   - **Task** → Verification tasks
   - **Guide** → How-to guides
 - [ ] YAML header `document type` matches index categorization
@@ -155,14 +157,13 @@ Use this exact structure:
 ```markdown
 ---
 project: AncientDefenders
-type: documentation index verification findings
 title: Documentation Index Check Findings
 version: [current date/time]
 document type: Status
 summary:
-  - [Total documents vs indexed]
-  - [Number of issues found]
-  - [Index completeness percentage]
+  - [bullet point 1]
+  - [bullet point 2]
+  - [bullet point 3]
 tags: [findings, index, documentation, verification]
 ---
 
@@ -243,9 +244,8 @@ Move documents to correct category sections
 **MEDIUM** - Affects logical organization
 
 ### User Feedback Options
-- [ ] Move all to correct sections
-- [ ] Review categorization rules
-- [ ] Other: _________________________
+- [ ] [Agent recommendation]
+- [ ] [user feedback with comments]
 
 ---
 

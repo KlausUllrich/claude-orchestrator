@@ -3,7 +3,7 @@
 ## Context Guardian Token Tracking in Claude Code
 
 ### The Issue
-Context Guardian cannot automatically track token usage in Claude Code sessions because:
+Context Guardian currently cannot automatically track token usage in Claude Code sessions because:
 - Claude Code's token counting is internal and not exposed to external tools
 - Context Guardian works by manually processing text through `add_content()`
 - No API or integration point exists between Claude Code and external Python scripts
@@ -66,3 +66,7 @@ For Claude Code development, focus on:
 4. Session handover documents
 
 The orchestrator still provides value through session management, even without automatic token tracking.
+
+## User Notes
+The user has gathered some research under: /home/klaus/game-projects/Feature Analysis/FEATURE-tokentracker/
+The user wants a propoper analysis if a valuable token counter can be achieved.
