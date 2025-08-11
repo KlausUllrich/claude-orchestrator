@@ -4,10 +4,15 @@
 
 ## 🔴 IMMEDIATE PRIORITY (Next Session)
 
-### The ONE Thing: Fix Session-End Workflow
-- [ ] Fix path issues in session-end command (cd claude-orchestrator error)
-- [ ] Fix handover command syntax (info vs --summary info)
-- [ ] Implement proper sub-agent parallel execution with Task tool
+### The ONE Thing: Fix Critical Session-End Issues
+- [x] Fix path issues in session-end command (cd claude-orchestrator error) - DONE
+- [x] Fix handover command syntax (info vs --summary info) - DONE
+- [ ] **CRITICAL: No sub-agents are being launched!** Must fix Task tool integration
+- [ ] Fix handover to archive old version BEFORE editing (not after)
+- [ ] Fix handover title to include current timestamp
+- [ ] Fix workflow to present full handover document (not step-by-step edits)
+- [ ] Fix: Comments must not stop the entire workflow
+- [ ] Test with single task only: unreferenced_documents_check
 - [ ] Test full flow: session-start → work → session-end → handover
 
 ### After Session-End Works

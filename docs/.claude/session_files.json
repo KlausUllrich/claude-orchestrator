@@ -1,0 +1,15 @@
+{
+  "session_start": "2025-08-11T12:33:43.844785",
+  "files": [
+    {
+      "timestamp": "2025-08-11T12:33:43.844850",
+      "action": "write",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/test-findings-unreferenced-documents.md"
+    },
+    {
+      "timestamp": "2025-08-11T12:36:43.077142",
+      "action": "write",
+      "file": "/home/klaus/game-projects/claude-orchestrate/.claude/commands/session-end.md"
+    }
+  ]
+}

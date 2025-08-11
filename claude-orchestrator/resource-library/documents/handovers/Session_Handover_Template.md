@@ -27,7 +27,7 @@ Before saving this handover, verify:
 ## 🔴 MANDATORY READS (EVERY SESSION)
 <!-- DO NOT REMOVE - REQUIRED SECTION -->
 
-**Read these documents in order - NO EXCEPTIONS:**
+**Read these documents in order - read ALL in FULL - NO EXCEPTIONS:**
 
 ### 1. Core Project Rules 
 - [ ] `/docs/status/read-first.md` - must be read in full!
@@ -88,6 +88,7 @@ Before starting, confirm you understand:
 
 ### Time Boxing
 - If primary objective not achieved in [X] attempts → STOP and investigate architecture
+- do not use time as a reason not to finish a task
 
 ## ⚠️ Critical Warnings & Known Issues
 <!-- DO NOT REMOVE - REQUIRED SECTION -->

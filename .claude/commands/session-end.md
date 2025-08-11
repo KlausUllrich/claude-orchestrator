@@ -6,153 +6,75 @@ When user types: `/session-end`
 ## Action
 Execute comprehensive session end workflow with user approval at key decision points.
 
-## Implementation
-Execute the orchestrator's session end command:
+## Implementation Steps
+
+### Step 1: Get Configuration
+First, run the orchestrator to get session configuration:
 ```bash
-cd claude-orchestrator && python orchestrate.py session end
+python orchestrate.py session end
+```
+This will output the workflow configuration and instructions.
+
+### Step 2: Launch Parallel Tasks
+After getting configuration, immediately launch:
+
+#### A. Handover Creation
+Execute the `/handover` command workflow
+
+#### B. Maintenance Analysis Agents
+For each maintenance task (starting with just `unreferenced_documents_check` for testing):
+
+Use the Task tool to launch maintenance agent:
+```
+Task tool parameters:
+- description: "Analyze [task_name]"
+- subagent_type: "general-purpose"
+- prompt: 
+  "You are a maintenance agent for the claude-orchestrator project.
+   
+   Read the agent template at: 
+   /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/agents/maintenance-agent/maintenance-agent.md
+   
+   Then execute the task document at:
+   /home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/documents/documentation-tasks/[task_name].md
+   
+   Mode: ANALYZE
+   
+   Create a findings report and save it to:
+   /home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/findings-[task_name]-[timestamp].md"
 ```
 
-## Overview
-When you run `/session-end`, here's what happens:
+### Step 3: Complete Handover
+1. Gather session information using `python orchestrate.py handover --summary info`
+2. Create comprehensive handover document following template
+3. Get user approval
+4. Archive old handover BEFORE saving new one
+5. Save to `docs/status/handover-next.md`
 
-```
-1. Launch parallel tasks: handover creation + sub-agent analysis
-2. Execute /handover command workflow (gather info → create → review → approve → save)
-3. Review sub-agent findings and approve actions
-4. Execute all approved changes
-5. Update documentation and database
-6. Optional: Clean up reports
-7. Commit and push changes
-```
+### Step 4: Review Maintenance Findings
+Once agents complete:
+1. Read each findings report
+2. Present findings conversationally (one task at a time)
+3. Get user decisions on what to fix
+4. Save decisions to JSON file
 
-## Workflow Phases
+### Step 5: Execute Approved Fixes
+For each approved fix:
+1. Launch maintenance agent in FIX mode with decisions file
+2. Report what was done
 
-### Phase 1: Parallel Task Launch
-Start immediately and concurrently:
-- **Handover Creation**: Begin `/handover` command process
-- **Sub-agents**: Execute maintenance analysis tasks
+### Step 6: Update Documentation
+- Update users-todos.md with completed items
+- Update any other affected documentation
 
-Sub-agents execute tasks based on configuration, which may include:
-- unreferenced_documents_check
-- document_structure_check  
-- content_consistency_check
-- yaml_headers_check
-- documentation_index_check
-- And others as configured
+### Step 7: Database Update
+Create session savepoint with final state
 
-### Phase 2: Handover Process (Using /handover Command)
-Execute the full `/handover` command workflow:
-
-#### Information Gathering
-```bash
-cd claude-orchestrator && python orchestrate.py handover info
-```
-- Review session context
-- Check system state
-- Analyze memory systems
-- Compare goals vs outcomes
-
-#### Handover Creation
-LLM creates comprehensive handover following template:
-- Mandatory reads section
-- Development state summary
-- Next session goals
-- Critical warnings
-- Task breakdown
-- References and context
-
-#### User Review & Approval
-```
-📝 Session Handover Ready
-
-[Shows complete handover document]
-
-Options:
-A) Approve and save handover
-B) Request specific changes
-C) Add additional context
-```
-
-#### Save After Approval
-After user approves:
-- Archive previous handover FIRST
-- Save new handover to `docs/status/handover-next.md`
-- Confirm successful save
-
-### Phase 3: Sub-agent Findings Review
-Once analysis completes, present dynamic proposal:
-
-```
-📊 Maintenance Analysis Complete
-
-[Dynamic summary based on actual task results]
-
-Found X improvement opportunities:
-- Temporary files: [count]
-- Documentation issues: [count]
-- Structure problems: [count]
-
-View detailed reports:
-[List of generated reports]
-
-Your options:
-A) Apply all safe recommendations
-B) Review each category
-C) Skip cleanup
-D) View detailed reports
-```
-
-### Phase 4: Execute Approved Changes
-Apply changes from:
-- Approved sub-agent recommendations
-- Any handover revisions if needed
-
-### Phase 5: Documentation Updates
-Update all core documents from [`read-first.md`](../../docs/read-first.md):
-- Mark completed TODOs in users-todos.md
-- Update known-limitations.md if new ones found
-- Sync architecture.md if structure changed
-- Update other core docs as needed
-
-### Phase 6: Database Update (Session Savepoint)
-After all changes are made:
-- Update session_state with 'ended' status
-- Create final savepoint with type 'session_end'
-- Record completed tasks and pending items
-- Log unresolved issues
-
-**Naming Clarification**: "Savepoint" = our database checkpoint, distinct from Claude native checkpoints (not yet available)
-
-### Phase 7: Long-term Memory Update
-**Currently**: Placeholder
-**Future**: Extract patterns and learnings for knowledge base
-
-### Phase 8: Cleanup Sub-agent Reports (Optional)
-Before git commit, offer to clean up session reports:
-
-```
-📁 Session reports cleanup:
-
-Created 4 analysis reports this session.
-Archive them before commit? (Y/n)
-```
-
-### Phase 9: Git Commit and Push
-Present commit proposal:
-
-```
-📝 Ready to commit session changes
-
-Changes: X files modified
-
-Suggested message:
-"Session end: [main accomplishment from handover]
-- [Key change 1]
-- [Key change 2]
-- Maintenance: [cleanup summary]"
-
-Proceed? (Y/n)
-```
+### Step 8: Git Commit (Optional)
+If not using --no-git flag:
+1. Stage changes
+2. Create commit with session summary
+3. Push if requested
 
 ## Command Options
 
@@ -166,99 +88,70 @@ Proceed? (Y/n)
 # Skip git operations
 /session-end --no-git
 
-# Emergency end (handover only via /handover command)
+# Emergency end (handover only)
 /session-end --emergency
 ```
 
-### Emergency Mode
-`/session-end --emergency` focuses only on:
-1. Execute `/handover` command in emergency mode
-2. Quick handover creation and save
-3. Skip all analysis and cleanup
+## Critical Implementation Notes
 
-## Example Flow
+**IMPORTANT**: This command requires Claude to:
+1. Run Python script to get configuration
+2. **Actually launch Task tools** (not just print instructions)
+3. Coordinate between multiple parallel agents
+4. Handle the interactive handover process
+
+The Python script (`orchestrate.py session end`) only provides configuration and instructions. Claude must execute the actual workflow using Task tools and other commands.
+
+## Example Execution Flow
 
 ```
 User: /session-end
 
-Claude: 
-====[ Session End Overview ]====
-I'll help you end this session properly. Here's what will happen:
-1. ⚡ Creating handover and running analysis in parallel
-2. 📝 Review and save handover (using /handover workflow)
-3. 📊 Review maintenance findings
-4. ✨ Apply approved changes
-5. 💾 Update docs and database
-6. 📦 Commit your work
+Claude:
+1. Runs: python orchestrate.py session end
+   (Gets configuration and task list)
 
-Starting now...
+2. Launches in parallel:
+   - /handover command process
+   - Task tool for unreferenced_documents_check
+   - Task tool for other maintenance tasks
 
-====[ Phase 1: Parallel Processing ]====
-📝 Starting /handover command process...
-🔍 Launching maintenance analysis...
+3. Completes handover with user approval
 
-====[ Phase 2: Handover Process ]====
-Gathering information...
-[Runs: python orchestrate.py handover info]
+4. Reviews maintenance findings with user
 
-Creating comprehensive handover...
-[Following template structure]
+5. Executes approved fixes
 
-📝 **Session Handover Ready for Review:**
+6. Updates documentation and database
 
-[Shows full handover document]
-
-Main accomplishments:
-- Implemented session-end command
-- Created maintenance agent template
-
-Next session priorities:
-- Test full workflow
-- Implement database updates
-
-Approve handover? (Y/n/edit): Y
-✅ Previous handover archived to: docs/status/archive/
-✅ New handover saved to: docs/status/handover-next.md
-
-⏳ Waiting for analysis to complete...
-✅ Analysis complete (4 reports generated)
-
-====[ Phase 3: Maintenance Review ]====
-[Presents findings from sub-agents]
-
-====[ Phases 4-9: Continue as defined ]====
-[Execute approved changes, update docs, etc.]
-
-✨ Session ended successfully!
-📋 Next session: Run /session-start
+7. Commits changes if approved
 ```
 
-## Integration with /handover Command
+## Known Issues & Workarounds
 
-The session-end command reuses the complete `/handover` command workflow:
-- Same information gathering process
-- Same template-based creation
-- Same user review and approval flow
-- Same save mechanism (archive then save)
+### Issue: Task Tool Parallel Execution
+The Task tool may not support true parallel execution. If parallel launch fails:
+- Launch tasks sequentially instead
+- Start with handover first, then maintenance tasks
 
-This ensures consistency and avoids duplication of the handover logic.
+### Issue: Handover Save
+Ensure handover is actually saved by:
+1. Archiving old handover FIRST
+2. Writing new handover to handover-next.md
+3. Confirming file exists after save
 
-## Error Handling
+## Testing Checklist
 
-- **Handover fails**: `/handover` command handles its own errors
-- **Sub-agent fails**: Continue with partial results
-- **Database fails**: Log to file, continue
-- **Git fails**: Complete other steps, manual commit needed
-
-## Task Configuration
-
-The specific maintenance tasks run by sub-agents can be configured in:
-`claude-orchestrator/config/session-end-tasks.yaml` (future)
-
-Currently runs all available task documents from:
-`claude-orchestrator/resource-library/documents/documentation-tasks/`
+Before considering session-end working:
+- [ ] Python script provides configuration
+- [ ] Task tools actually launch (not just print)
+- [ ] Maintenance agents create findings reports
+- [ ] Handover is created and saved properly
+- [ ] User can review and approve changes
+- [ ] All approved changes are executed
+- [ ] Git commit includes all changes
 
 ## Related Commands
-- `/handover` - Create handover only (used internally by session-end)
+- `/handover` - Create handover only
 - `/session-start` - Start with previous handover
-- `/checkpoint` - Mid-session savepoint (TODO)
+- Individual agent launches for debugging

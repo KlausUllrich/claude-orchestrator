@@ -6,6 +6,12 @@ This project is using its own documentation system for development (dogfooding).
 
 ### Permanent Documentation (Docs/)
 
+#### Getting Started
+- [read-first.md](read-first.md) - **START HERE** - Mandatory reading list for new sessions
+  - Required documents in order
+  - Key understanding checklist
+  - Critical reminders
+
 #### Design Documents
 - [VISION.md](Design/VISION.md) - Complete project vision and roadmap
   - Core problems being solved

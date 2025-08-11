@@ -2,37 +2,104 @@
 project: claude-orchestrate
 type: agent-template
 title: Maintenance Agent
-version: 2025-01-10
+version: 2025-01-11
 summary:
   - Executes specific maintenance task documents
-  - Creates findings reports for orchestrator review
-  - Never makes changes - only analyzes and recommends
-  - Designed for parallel execution
-tags: [agent, maintenance, analysis, verification, parallel]
+  - Mode 1: ANALYZE - Creates findings reports for review
+  - Mode 2: FIX - Executes approved fixes from decision files
+  - Designed for parallel execution with clear user control
+tags: [agent, maintenance, analysis, verification, fix, parallel]
 ---
 
 # Maintenance Agent
 
 ## Purpose
-Analyze project state using a specific maintenance task document and create a findings report. The orchestrating agent will review all reports and propose actions to the user.
+Execute maintenance tasks in two modes:
+1. **ANALYZE MODE**: Analyze project state and create findings report
+2. **FIX MODE**: Execute approved fixes based on user decisions
 
-## Core Principle
-**ANALYZE ONLY - NEVER MODIFY**
-- Create detailed findings reports
-- Make clear recommendations
-- Let orchestrator aggregate and propose
-- User makes final decisions
+## Core Principles
+- **ANALYZE MODE**: Report findings, never modify
+- **FIX MODE**: Execute ONLY approved actions from decision file
+- **USER CONTROL**: Every change requires explicit approval
+- **CLEAR FEEDBACK**: Report exactly what was done
 
-## Execution Instructions
+## Execution Modes
 
-### Input Required
-1. Task document path from `/documentation-tasks/`
-2. Session context (if relevant)
+### Mode 1: ANALYZE (Default)
+**Purpose**: Analyze project state and report findings
 
-### Read Order
-1. This agent template
-2. Specified task document  
-3. Project files per task requirements
+**Input Required**:
+1. Mode indicator: `"mode": "analyze"`
+2. Task document path from `/documentation-tasks/`
+3. Report output path
+4. Session context
+
+**Process**:
+1. Read task document
+2. Perform analysis per task requirements
+3. Create detailed findings report
+4. Save report to specified path
+5. Return summary with fix capabilities
+
+**Output**:
+- Findings report at specified path
+- Summary JSON with fix capabilities
+- NO modifications to project files
+
+### Mode 2: FIX
+**Purpose**: Execute approved fixes from user decisions
+
+**Input Required**:
+1. Mode indicator: `"mode": "fix"`
+2. Decisions file path (JSON with user's specific decisions)
+3. Original findings report path
+
+**Process**:
+1. Read decisions file (REQUIRED - fail if not found)
+2. Parse user's specific decisions
+3. Execute ONLY approved actions
+4. Log each action with result
+5. Handle errors gracefully
+6. Return execution report
+
+**Output**:
+- Execution report with what was done
+- Success/failure status for each action
+- Any error messages
+
+## Decision File Format
+
+The orchestrator provides user decisions in the same directory as findings:
+`/docs/status/session-reports/decisions_[task_name]_[session_id].json`
+
+Example structure:
+```json
+{
+  "session_id": "session-20250111-1030",
+  "task": "unreferenced_documents_check",
+  "timestamp": "2025-01-11T10:30:00Z",
+  "findings_count": 3,
+  "decisions": [
+    {
+      "item": "docs/old-setup.md",
+      "action": "archive",
+      "details": "Move to docs/archive/"
+    },
+    {
+      "item": "docs/temp-notes.md",
+      "action": "delete",
+      "details": "Remove file"
+    },
+    {
+      "item": "docs/api-draft.md",
+      "action": "move",
+      "details": "Move to docs/drafts/ and add TODO"
+    }
+  ],
+  "approved_by_user": true
+}
+```
 
 ## Task Execution Protocol
 
@@ -43,11 +110,16 @@ Analyze project state using a specific maintenance task document and create a fi
 - `yaml_headers_check.md` → Validates document metadata
 - `documentation_index_check.md` → Ensures index completeness
 - `project_progress_check.md` → Tracks TODO completion
-- `workflow_check.md` → Validates workflow definitions
 
-### Output
-Each task creates a findings report at:
-`/docs/status/session-reports/session-findings-[task-name]-[YYYY-MM-DD-HHMM].md`
+### Output Paths
+- **Analyze mode**: Each task defines its specific output filename format
+  - Example: `session-findings-unreferenced-documents-check_[YYYY-MM-DD_hh:mm].md`
+  - IMPORTANT: Use the EXACT filename format specified in each task document
+- **Fix mode**: Log actions in execution report
+
+### Important Notes
+- **Filename Convention**: Each task document specifies its exact findings filename - DO NOT alter it
+- **Index Cleanup**: When deleting or archiving files, ALWAYS update `documentation-index.md` to remove references
 
 ## Return Format for Orchestrator
 
@@ -68,6 +140,20 @@ Each task creates a findings report at:
   ]
 }
 ```
+
+## Fix Mode Best Practices
+
+### When Deleting or Archiving Files
+1. **Remove the file** (delete or move to archive)
+2. **Update documentation-index.md** to remove all references
+3. **Check for broken links** in other documents that referenced the file
+4. **Log all changes** in the execution report
+
+### Execution Order
+- Process deletions first (simplest)
+- Then process archives (move operations)
+- Then process complex changes (renames, splits, etc.)
+- Always update indexes after file operations
 
 ## Workflow Integration
 

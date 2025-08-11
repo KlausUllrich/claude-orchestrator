@@ -146,11 +146,14 @@ my-game-project/               # Any project root
 
 ### Metaphorical Naming
 - **brain/** - Core logic and decision making
+  - See [rules-readme.md](../../claude-orchestrator/brain/rules/rules-readme.md) for rules system documentation
 - **short-term-memory/** - Temporary session data (SQLite)
 - **long-term-memory/** - Persistent knowledge (Vector DB, facts)
 - **resource-library/** - Reusable templates and components
+  - See [Session_Handover_Template.md](../../claude-orchestrator/resource-library/documents/handovers/Session_Handover_Template.md) for handover structure
 - **bridges/** - Connections to external systems
 - **workflows/** - Project-type specific rules and processes
+  - See [tool-development README](../../claude-orchestrator/workflows/tool-development/README.md) for workflow documentation
 
 ### Portability Principles
 1. **Self-contained**: Everything in one folder

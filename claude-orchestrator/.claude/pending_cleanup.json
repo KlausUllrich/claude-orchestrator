@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-08-11T13:49:25.516073",
+  "files_count": 13,
+  "session_file": ".claude/session_files.json",
+  "files": [
+    {
+      "timestamp": "2025-08-11T09:18:43.382716",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/claude-orchestrator/orchestrate.py"
+    },
+    {
+      "timestamp": "2025-08-11T08:53:48.697501",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/claude-orchestrator/resource-library/agents/maintenance-agent/maintenance-agent.md"
+    },
+    {
+      "timestamp": "2025-08-11T08:55:28.806654",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/claude-orchestrator/brain/session-end-manager.py"
+    },
+    {
+      "timestamp": "2025-08-11T09:06:25.747160",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/handover-next.md"
+    },
+    {
+      "timestamp": "2025-08-11T09:11:30.843766",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/users-todos.md"
+    },
+    {
+      "timestamp": "2025-08-11T09:17:22.355808",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/.claude/commands/handover.md"
+    },
+    {
+      "timestamp": "2025-08-11T12:27:56.398532",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/.claude/commands/session-end.md"
+    },
+    {
+      "timestamp": "2025-08-11T09:22:45.235942",
+      "action": "write",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/session-findings-unreferenced-documents-check_2025-08-11_09:19.md"
+    },
+    {
+      "timestamp": "2025-08-11T12:43:08.748747",
+      "action": "write",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/handover-20250811-1000.md"
+    },
+    {
+      "timestamp": "2025-08-11T13:38:11.372975",
+      "action": "write",
+      "file": "/tmp/handover_content.md"
+    },
+    {
+      "timestamp": "2025-08-11T13:46:37.287723",
+      "action": "write",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/status/session-reports/decisions_unreferenced_documents_session-20250811-125232.json"
+    },
+    {
+      "timestamp": "2025-08-11T13:47:48.733840",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/documentation-index.md"
+    },
+    {
+      "timestamp": "2025-08-11T13:48:38.838022",
+      "action": "edit",
+      "file": "/home/klaus/game-projects/claude-orchestrate/docs/technical/architecture.md"
+    }
+  ]
+}

@@ -40,7 +40,10 @@ The handover follows the template at `claude-orchestrator/resource-library/docum
 Following the template structure:
 
 1. **Header with Metadata**
-   - Project name, date, timestamp
+   - Project name
+   - **CRITICAL**: Title format: `Session Handover: [descriptive session summary] YYYY-MM-DD HH:MM`
+     - Example: `Session Handover: Fixed Session-End Workflow 2025-01-11 08:45`
+     - Example: `Session Handover: Implemented Agent Architecture 2025-01-11 14:30`
    - Summary bullets (4 key points)
    - Relevant tags
 
@@ -100,9 +103,11 @@ Following the template structure:
 ### Phase 4: User Review
 
 1. **Present Complete Handover**
-   - Show the validated document to user
-   - Highlight key sections
+   - **CRITICAL**: Show the FULL handover document at once - NOT step-by-step edits
+   - Present the entire validated document to user
+   - Highlight key sections after showing full document
    - Explain reasoning for priorities
+   - **NEVER** interrupt workflow if user comments - incorporate feedback and continue
 
 2. **Get Feedback**
    - User can approve as-is
