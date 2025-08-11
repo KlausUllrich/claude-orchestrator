@@ -17,7 +17,7 @@
           },
           {
             "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py write 2>> ../.claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py write 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -30,7 +30,7 @@
           },
           {
             "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py edit 2>> ../.claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -43,7 +43,7 @@
           },
           {
             "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py edit 2>> ../.claude/hooks_debug.log"
+            "command": "python3 ../.claude/hooks/track_file.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       }

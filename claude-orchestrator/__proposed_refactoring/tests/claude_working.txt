@@ -1,0 +1,2 @@
+Claude is writing this file at 21:18 while the subprocess is running in the background!
+This proves Claude maintains autonomy.

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "parallel-test": {
+      "command": "python",
+      "args": [
+        "/home/klaus/game-projects/claude-orchestrate/claude-orchestrator/__proposed_refactoring/tests/test_mcp_approach.py",
+        "--server"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}
