@@ -25,13 +25,14 @@
   - [ ] Measure execution time differences
   - [ ] Document results and recommendations
 
-### Session-End Workflow Fixes (Completed This Session)
+### Session-End Workflow Fixes (Partially Complete)
 - [x] Fix path issues in session-end command - DONE
 - [x] Fix handover command syntax - DONE
 - [x] Fix workflow order (sequential, one-by-one) - DONE THIS SESSION
 - [x] Implement project root finding function - DONE THIS SESSION
 - [x] Add recommendations logic for findings - DONE THIS SESSION
 - [x] Improve sub-agent display format - DONE THIS SESSION
+- [ ] **FIX: Git section doesn't execute automatically** - Agent skips to summary instead
 - [ ] Test with single task only: unreferenced_documents_check
 - [ ] Test full flow: session-start → work → session-end → handover
 

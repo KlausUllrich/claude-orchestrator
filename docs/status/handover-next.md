@@ -90,6 +90,12 @@ Research and implement agent parallelization from __evaluation/ folder
 
 ## ⚠️ Critical Warnings & Known Issues
 
+### NEW: Session-End Git Workflow Issue
+**Problem**: Git commit section doesn't execute automatically after maintenance phase
+**Symptom**: Agent jumps to summary instead of proceeding with git operations
+**Workaround**: User must explicitly prompt for git commit and push
+**Impact**: Workflow incomplete without manual intervention
+
 ### NEW: Handover System Changes
 **Critical**: Handover now requires validation BEFORE presenting to user
 - Must run `python orchestrate.py handover --summary validate`
