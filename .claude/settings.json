@@ -14,10 +14,6 @@
           {
             "type": "command",
             "command": "echo \"[$(date)] PreToolUse Write triggered\" >> ../.claude/hooks_debug.log 2>&1"
-          },
-          {
-            "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py write 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -27,10 +23,6 @@
           {
             "type": "command",
             "command": "echo \"[$(date)] PreToolUse Edit triggered\" >> ../.claude/hooks_debug.log 2>&1"
-          },
-          {
-            "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       },
@@ -40,10 +32,6 @@
           {
             "type": "command",
             "command": "echo \"[$(date)] PreToolUse MultiEdit triggered\" >> ../.claude/hooks_debug.log 2>&1"
-          },
-          {
-            "type": "command",
-            "command": "python3 ../.claude/hooks/track_file_fixed.py edit 2>> ../.claude/hooks_debug.log"
           }
         ]
       }

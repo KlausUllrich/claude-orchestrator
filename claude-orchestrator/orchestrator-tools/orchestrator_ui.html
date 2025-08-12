@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Claude Orchestrator UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .tab-bar {
+            height: 45px;
+            background: linear-gradient(to bottom, #2d2d2d, #252525);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            padding: 0 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .tab {
+            padding: 8px 20px;
+            margin-right: 2px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            user-select: none;
+        }
+        
+        .tab:hover {
+            background: #3a3a3a;
+        }
+        
+        .tab.active {
+            background: #1a1a1a;
+            color: #4a9eff;
+            font-weight: 600;
+        }
+        
+        .tab .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+        
+        .tab .status-dot.idle { background: #4caf50; }
+        .tab .status-dot.busy { background: #ff9800; animation: pulse 1.5s infinite; }
+        .tab .status-dot.error { background: #f44336; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .terminal-container {
+            flex: 1;
+            background: #0c0c0c;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 15px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .terminal.active {
+            display: block;
+        }
+        
+        .terminal pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+        
+        .terminal-input .prompt {
+            color: #4a9eff;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .terminal-input input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+        }
+        
+        .status-bar {
+            height: 35px;
+            background: #252525;
+            border-top: 1px solid #444;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 30px;
+            font-size: 13px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-bar button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        
+        .status-bar button:hover {
+            background: #357abd;
+        }
+        
+        .status-bar .spacer {
+            flex: 1;
+        }
+        
+        .shortcuts-hint {
+            color: #888;
+            font-size: 12px;
+        }
+        
+        .terminal-output {
+            color: #00ff00;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .command-palette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #2a2a2a;
+            border: 1px solid #4a9eff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1000;
+            min-width: 400px;
+        }
+        
+        .command-palette.show {
+            display: block;
+        }
+        
+        .command-palette h3 {
+            margin-bottom: 15px;
+            color: #4a9eff;
+        }
+        
+        .command-palette input {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .command-list {
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .command-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .command-item:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-bar">
+        <div class="tab active" data-terminal="orchestrator" onclick="switchTab('orchestrator')">
+            🎭 Orchestrator
+            <span class="status-dot idle"></span>
+        </div>
+        <div class="tab" data-terminal="agent1" onclick="switchTab('agent1')">
+            🤖 Agent 1
+            <span class="status-dot idle"></span>
+        </div>
+        <div class="tab" data-terminal="agent2" onclick="switchTab('agent2')">
+            🤖 Agent 2
+            <span class="status-dot idle"></span>
+        </div>
+        <div class="tab" data-terminal="agent3" onclick="switchTab('agent3')">
+            🤖 Agent 3
+            <span class="status-dot idle"></span>
+        </div>
+        <div class="tab" onclick="addNewAgent()" style="min-width: 40px; justify-content: center;">
+            ➕
+        </div>
+    </div>
+    
+    <div class="terminal-container">
+        <div id="orchestrator" class="terminal active">
+            <pre class="terminal-output">🎭 Claude Orchestrator System
+════════════════════════════════════════════
+
+Welcome to the Orchestrator UI! This is a mockup showing the interface design.
+
+In the real implementation, this would be a live Claude terminal where you can:
+- Check agent status
+- Launch parallel tasks
+- Coordinate workflows
+- Monitor progress
+
+Try these keyboard shortcuts:
+• Ctrl+1/2/3 - Switch to agents
+• Ctrl+0 - Back to orchestrator
+• Ctrl+Tab - Cycle through tabs
+• Ctrl+P - Command palette
+
+> Ready for commands...</pre>
+            <div class="terminal-input">
+                <span class="prompt">orchestrator></span>
+                <input type="text" placeholder="Type command here..." autofocus>
+            </div>
+        </div>
+        
+        <div id="agent1" class="terminal">
+            <pre class="terminal-output">🤖 Agent 1 Terminal
+════════════════════════════════════════════
+
+Status: Idle
+Ready for tasks...
+
+This agent can be launched with specific tasks from the orchestrator.
+When active, you'll see the Claude output here in real-time.</pre>
+            <div class="terminal-input">
+                <span class="prompt">agent1></span>
+                <input type="text" placeholder="Direct input to agent...">
+            </div>
+        </div>
+        
+        <div id="agent2" class="terminal">
+            <pre class="terminal-output">🤖 Agent 2 Terminal
+════════════════════════════════════════════
+
+Status: Idle
+Ready for tasks...</pre>
+            <div class="terminal-input">
+                <span class="prompt">agent2></span>
+                <input type="text" placeholder="Direct input to agent...">
+            </div>
+        </div>
+        
+        <div id="agent3" class="terminal">
+            <pre class="terminal-output">🤖 Agent 3 Terminal
+════════════════════════════════════════════
+
+Status: Idle
+Ready for tasks...</pre>
+            <div class="terminal-input">
+                <span class="prompt">agent3></span>
+                <input type="text" placeholder="Direct input to agent...">
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar">
+        <div class="status-item">
+            <span>📊 Status:</span>
+            <strong>Ready</strong>
+        </div>
+        <div class="status-item">
+            <span>🤖 Agents:</span>
+            <strong>0/3 active</strong>
+        </div>
+        <div class="spacer"></div>
+        <button onclick="runParallelTasks()">▶ Run Parallel</button>
+        <button onclick="clearTerminal()">Clear</button>
+        <div class="shortcuts-hint">
+            Press Ctrl+P for commands
+        </div>
+    </div>
+    
+    <div id="commandPalette" class="command-palette">
+        <h3>Command Palette</h3>
+        <input type="text" placeholder="Type command..." id="commandInput">
+        <div class="command-list">
+            <div class="command-item">Launch all agents</div>
+            <div class="command-item">Check status</div>
+            <div class="command-item">Clear outputs</div>
+            <div class="command-item">Save session</div>
+            <div class="command-item">Load session</div>
+        </div>
+    </div>
+    
+    <script>
+        let activeTerminal = 'orchestrator';
+        let agentCount = 3;
+        
+        function switchTab(terminalId) {
+            // Hide all terminals
+            document.querySelectorAll('.terminal').forEach(term => {
+                term.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected terminal
+            document.getElementById(terminalId).classList.add('active');
+            
+            // Mark tab as active
+            document.querySelector(`[data-terminal="${terminalId}"]`).classList.add('active');
+            
+            // Focus input
+            document.querySelector(`#${terminalId} input`).focus();
+            
+            activeTerminal = terminalId;
+        }
+        
+        function addNewAgent() {
+            agentCount++;
+            alert(`Adding Agent ${agentCount} - In real implementation, this would spawn a new Claude agent`);
+        }
+        
+        function runParallelTasks() {
+            // Update status dots to busy
+            document.querySelectorAll('.tab .status-dot').forEach(dot => {
+                if (!dot.parentElement.textContent.includes('Orchestrator')) {
+                    dot.className = 'status-dot busy';
+                }
+            });
+            
+            alert('In real implementation, this would launch all agents with parallel tasks');
+            
+            // Simulate completion after 3 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.tab .status-dot').forEach(dot => {
+                    dot.className = 'status-dot idle';
+                });
+            }, 3000);
+        }
+        
+        function clearTerminal() {
+            const output = document.querySelector(`#${activeTerminal} .terminal-output`);
+            output.textContent = 'Terminal cleared.\\n> ';
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case '0':
+                        e.preventDefault();
+                        switchTab('orchestrator');
+                        break;
+                    case '1':
+                        e.preventDefault();
+                        switchTab('agent1');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        switchTab('agent2');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        switchTab('agent3');
+                        break;
+                    case 'Tab':
+                        e.preventDefault();
+                        // Cycle through tabs
+                        const tabs = ['orchestrator', 'agent1', 'agent2', 'agent3'];
+                        const currentIndex = tabs.indexOf(activeTerminal);
+                        const nextIndex = (currentIndex + 1) % tabs.length;
+                        switchTab(tabs[nextIndex]);
+                        break;
+                    case 'p':
+                        e.preventDefault();
+                        const palette = document.getElementById('commandPalette');
+                        palette.classList.toggle('show');
+                        if (palette.classList.contains('show')) {
+                            document.getElementById('commandInput').focus();
+                        }
+                        break;
+                }
+            }
+            
+            // ESC to close command palette
+            if (e.key === 'Escape') {
+                document.getElementById('commandPalette').classList.remove('show');
+            }
+        });
+        
+        // Simulate terminal input
+        document.querySelectorAll('.terminal-input input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const command = e.target.value;
+                    const output = e.target.closest('.terminal').querySelector('.terminal-output');
+                    output.textContent += `\\n> ${command}\\n`;
+                    
+                    // Simulate response
+                    setTimeout(() => {
+                        output.textContent += `Processing: ${command}...\\n> `;
+                        e.target.value = '';
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
