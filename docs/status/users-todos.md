@@ -2,7 +2,7 @@
 
 *Located with handover documents for easy reference during sessions*
 
-## 🔴 IMMEDIATE PRIORITY (Next Session)
+## 🔴 IMMEDIATE PRIORITY (Current Session)
 
 ### ✅ BREAKTHROUGH ACHIEVED: Agent Parallelization SOLVED!
 - [x] **Discovered the solution**: `run_in_background=True` with Claude CLI
@@ -12,27 +12,58 @@
 - [x] **Created**: Visual monitoring with tmux dashboard
 - [x] **Documented**: Complete breakthrough in ORCHESTRATOR_BREAKTHROUGH.md
 
-### NEW PRIORITY: Professional UI Implementation
-- [ ] **Requirements Gathering & Technology Stack Decision**
-  - [ ] Thorough discussion of ALL requirements (existing and new)
-  - [ ] UI/UX requirements (tabs, scrolling, input, full-screen)
-  - [ ] Functionality requirements (agent management, monitoring, control)
-  - [ ] Scalability requirements (4+ agents, dynamic spawning)
-  - [ ] Integration requirements (file system, sessions, context sharing)
-  - [ ] Performance requirements (latency, resource usage)
-  - [ ] Make final technology stack decision (Web vs Electron vs other)
-- [ ] **Build Encapsulated Test with Python + Web**
-  - [ ] Create minimal FastAPI backend with PTY support
-  - [ ] Implement WebSocket for real-time communication
-  - [ ] Build HTML/JS frontend with xterm.js
-  - [ ] Test with real Claude processes
-  - [ ] Measure performance and latency
-  - [ ] Validate all core features work
-- [ ] **Design Final Architecture**
-  - [ ] Based on test results and requirements
-  - [ ] Plan migration path from current system
-  - [ ] Design extensibility for future features
-  - [ ] Create implementation roadmap
+### 🎯 NEW DIRECTION: WezTerm-based Guardian System
+**Decision Made**: No web dashboard. Focus on WezTerm terminal multiplexing.
+**Project Rename**: "Claude Guardian" (better reflects protective/monitoring nature)
+
+### 🎯 CORE FUNCTIONALITY TO PRESERVE & IMPROVE
+**Current Working UX**: `/session-start` and `/session-end` commands
+**Goal**: Transfer these to new system with agent-based monitoring for better, consistent handovers
+**Success Metric**: `/session-end` produces reliable, high-quality handovers through agent guidance
+
+### 📋 IMMEDIATE: Agent Communication Tests in WezTerm
+- [x] **Test 1: Chain Communication** ✅ SUCCESSFUL
+  - [x] Agent 1 asks Agent 2 to ask Agent 3 for random number
+  - [x] Agent 3 → Agent 2 → Agent 1 (who doubles it)
+  - [x] Documented in `test_evidence/01_chain_communication_SUCCESS.md`
+  - **Result**: Full chain worked! Number 73 → doubled to 146
+  - **Key Finding**: Need `--dangerously-skip-permissions` flag
+  
+- [ ] **Test 2: Output Reading**
+  - [ ] Agent 2 creates webpage summary
+  - [ ] Agent 1 reads Agent 2's output file
+  - [ ] Document in `test_evidence/02_output_reading.md`
+  
+- [ ] **Test 3: Monitor/Approval Pattern**
+  - [ ] Create rules file for ASCII art standards
+  - [ ] Agent 1 starts Agent 2 as monitor
+  - [ ] Agent 1 creates ASCII painting
+  - [ ] Agent 2 evaluates and provides feedback
+  - [ ] Loop until Agent 2 approves
+  - [ ] Document in `test_evidence/03_monitor_approval.md`
+
+- [ ] **Test 4: Session-End Guardian Pattern (CRITICAL)**
+  - [ ] Main agent runs `/session-end` equivalent
+  - [ ] Guardian agent monitors handover quality
+  - [ ] Guardian ensures all required sections present
+  - [ ] Guardian validates no contradictions
+  - [ ] Guardian forces improvements if needed
+  - [ ] Only approved handover gets saved
+  - [ ] Document in `test_evidence/04_session_end_guardian.md`
+
+### 📦 Installation Requirements Tracking
+- [x] WezTerm installed
+- [x] Fonts installed (JetBrains Mono, Nerd Fonts)
+- [x] Claude CLI with `--dangerously-skip-permissions` flag support
+- [ ] Document all requirements in REQUIREMENTS.txt
+- [ ] Create setup.sh for one-click installation
+
+### 🔑 Key Discoveries from Test 1
+- **Agent Independence**: Each agent needs full Claude instance with tools
+- **Permission Flag Required**: `--dangerously-skip-permissions` for cross-directory access
+- **Prompt Engineering Critical**: Need explicit DO/DON'T instructions
+- **Polling Inefficient**: Need event-driven hooks to replace sleep loops
+- **Workspace Architecture Works**: agent-per-folder with inputs/outputs proven successful
 
 ### Session-End Workflow Fixes (Partially Complete)
 - [x] Fix path issues in session-end command - DONE
@@ -55,6 +86,30 @@
 - [ ] Create message-queue.db for agent communication
 
 ## 🟡 SHORT TERM (Next 2-3 Sessions)
+
+### 🔧 WezTerm UI/UX Optimization
+- [ ] Configure optimal pane layouts for multi-agent work
+- [ ] Set up dynamic tab titles showing agent status
+- [ ] Create color coding for different agent types
+- [ ] Document keybindings and navigation
+- [ ] Create launch scripts for common patterns
+- [ ] Test with 4+ agents simultaneously
+
+### 🏗️ Architecture Planning for Claude Guardian
+- [ ] Document lessons learned from all tests
+- [ ] Define agent communication protocols
+- [ ] Design file structure for outputs/status/sessions
+- [ ] Plan session management and cleanup strategy
+- [ ] Create state management design
+
+### 📂 Folder Structure Redesign
+- [ ] Rename `resource-library/` to `templates/`
+- [ ] Design agent-per-folder architecture
+  - [ ] Each agent gets own directory with config/context/outputs
+  - [ ] Agents can have specific MCP servers
+  - [ ] Clean session cleanup (delete old agent folders)
+- [ ] Simplify documentation structure
+- [ ] Make project fully copy/paste ready
 
 ### Code Organization
 - [ ] Rename `rule_enforcer.py` → `rule-engine.py` (kebab-case)
@@ -82,6 +137,20 @@
 - [ ] Add workflow-specific document requirements
 
 ## 🟠 MEDIUM TERM (Dedicated Sessions Required)
+
+### 🎯 Core Command Migration to Guardian System
+- [ ] **Migrate `/session-start` with Guardian Enhancement**
+  - [ ] Guardian reads previous handover
+  - [ ] Guardian ensures all required docs are read
+  - [ ] Guardian monitors adherence to project rules
+  - [ ] Guardian provides context reminders during session
+  
+- [ ] **Migrate `/session-end` with Guardian Control**
+  - [ ] Multiple specialized agents for different checks
+  - [ ] Guardian orchestrates the handover creation
+  - [ ] Quality gates before handover approval
+  - [ ] Consistent, high-quality output every time
+  - [ ] No more manual fixing of handovers
 
 ### Token Tracking Session (HIGH PRIORITY)
 - [ ] Research Claude-Flow's solution for token tracking

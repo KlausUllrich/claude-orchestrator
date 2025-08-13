@@ -1,0 +1,110 @@
+# Claude Guardian System Requirements
+
+## System Requirements
+
+### Operating System
+- Linux (tested on Manjaro)
+- macOS (should work, needs testing)
+- Windows WSL2 (should work, needs testing)
+
+### Terminal Emulator
+- WezTerm (REQUIRED)
+  - Installation: `sudo pacman -S wezterm` (Manjaro/Arch)
+  - Or download from: https://wezfurlong.org/wezterm/
+
+### Fonts (Recommended)
+- JetBrains Mono: `sudo pacman -S ttf-jetbrains-mono`
+- Nerd Fonts Symbols: `sudo pacman -S ttf-nerd-fonts-symbols-mono`
+
+## Core Dependencies
+
+### Claude CLI (REQUIRED)
+- Anthropic's Claude command-line tool
+- Must support `--dangerously-skip-permissions` flag
+- Installation: Follow Anthropic's official guide
+- API Key required: Set ANTHROPIC_API_KEY environment variable
+
+### Python 3.8+
+- Required for orchestration scripts
+- Standard library modules used:
+  - os, sys, time, json, pathlib
+  - No external Python packages required initially
+
+### Shell
+- Bash or Zsh
+- Basic Unix tools: ls, cat, echo, sleep, grep
+
+## Optional but Recommended
+
+### File Manager
+- ranger: `sudo pacman -S ranger`
+- Or any terminal file manager
+
+### Process Monitoring
+- htop: `sudo pacman -S htop`
+- For monitoring multiple Claude instances
+
+### Version Control
+- git (for project management)
+- GitHub CLI: `sudo pacman -S github-cli` (optional)
+
+## Future Requirements (Claude Guardian)
+
+### For Event-Driven System
+- inotify-tools (Linux): `sudo pacman -S inotify-tools`
+- fswatch (macOS): `brew install fswatch`
+
+### For Web Dashboard (if needed)
+- Python: FastAPI, uvicorn
+- Node.js: For frontend development
+
+## Installation Verification
+
+Run these commands to verify installation:
+
+```bash
+# Check WezTerm
+wezterm --version
+
+# Check Claude CLI
+claude --version
+
+# Check for permissions flag support
+claude --help | grep "dangerously-skip-permissions"
+
+# Check Python
+python3 --version
+
+# Check shell
+echo $SHELL
+```
+
+## Quick Install Script (Manjaro/Arch)
+
+```bash
+#!/bin/bash
+# Save as install_requirements.sh
+
+echo "Installing Claude Guardian requirements..."
+
+# Terminal and fonts
+sudo pacman -S wezterm ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono
+
+# Optional tools
+sudo pacman -S ranger htop github-cli
+
+# Future requirements
+sudo pacman -S inotify-tools
+
+echo "Installation complete!"
+echo "Remember to:"
+echo "1. Install Claude CLI from Anthropic"
+echo "2. Set your ANTHROPIC_API_KEY"
+```
+
+## Notes
+
+- The `--dangerously-skip-permissions` flag is CRITICAL for multi-agent communication
+- Each agent needs its own terminal/pane in WezTerm
+- File-based communication requires shared filesystem access
+- Python scripts are used for orchestration but agents are full Claude instances
