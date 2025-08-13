@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "guardian": {
+      "command": "node",
+      "args": ["/home/klaus/game-projects/claude-orchestrate/guardian/mcp-server/server.js"]
+    }
+  }
+}

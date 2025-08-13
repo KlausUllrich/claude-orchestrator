@@ -1,0 +1,20 @@
+{
+  "name": "guardian-mcp-server",
+  "version": "1.0.0",
+  "description": "Event-driven MCP server for Claude agent coordination",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "sqlite3": "^5.1.6",
+    "sqlite": "^5.1.1",
+    "chokidar": "^3.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

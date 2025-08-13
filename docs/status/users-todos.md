@@ -29,10 +29,13 @@
   - **Result**: Full chain worked! Number 73 → doubled to 146
   - **Key Finding**: Need `--dangerously-skip-permissions` flag
   
-- [ ] **Test 2: Output Reading**
-  - [ ] Agent 2 creates webpage summary
-  - [ ] Agent 1 reads Agent 2's output file
-  - [ ] Document in `test_evidence/02_output_reading.md`
+- [x] **Test 2: Output Reading** ✅ SUCCESSFUL
+  - [x] Agent 2 creates webpage summary (analyzed nius.de)
+  - [x] Agent 1 reads Agent 2's output file WITHOUT BLOCKING
+  - [x] Monitor script injected notifications into Agent 1
+  - [x] Agent 1 stayed responsive (even told jokes!)
+  - [x] Key solution: monitor_and_inject.sh polls MCP for agents
+  - [x] Document in `test_evidence/02_output_reading_SUCCESS.md`
   
 - [ ] **Test 3: Monitor/Approval Pattern**
   - [ ] Create rules file for ASCII art standards
