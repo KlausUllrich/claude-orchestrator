@@ -41,6 +41,10 @@ Before saving this handover, verify:
 - [ ] `[Document Path]` - **Why Required**: [Specific reason]
 - [ ] `[Document Path]` - **Why Required**: [Specific reason]
 
+### 4. Useful References
+[read on demand]
+- [ ] `/docs/documentation-index.md` - List all relevant documents with a summary
+
 **💡 Better to spend tokens on proper onboarding than waste sessions debugging**
 
 ---

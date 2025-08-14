@@ -339,7 +339,7 @@
 - [x] Session state table
 - [x] Checkpoint table (called handover now)
 - [x] Clarified orchestration approach
-- [x] Created QUICK-REFERENCE.md
+- [x] Created quick reference (now merged into architecture.md)
 - [x] Created comprehensive TODO documentation
 
 ## 🎯 Success Metrics

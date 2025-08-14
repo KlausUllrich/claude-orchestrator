@@ -1,381 +1,398 @@
 ---
 project: claude-orchestrate
 type: vision
-title: Claude Orchestrate - Vision & Design Document
-version: 2025-01-11 20:00
-status: LIVING DOCUMENT - Open for Discussion
+title: "Claude Orchestrate - Vision & Design Document (Current Architecture)"
+version: 2025-08-14
+status: CURRENT
 summary:
-  - Context management system for game development with LLMs
-  - Rethinking documentation tiers with tool-specific solutions
-  - Multi-agent orchestration for complex projects
-  - Focus on preventing context overflow and knowledge loss
-tags: [vision, architecture, discussion, game-dev, orchestration]
+  - Multi-agent WezTerm system with main + helper agents
+  - Non-blocking MCP communication with background polling layer
+  - SQLite database for context sharing between agents
+  - Helper agents monitor and support main agent
+  - Long-term vector database planned
+tags: [vision, architecture, multi-agent, wezterm, mcp, non-blocking]
 ---
 
 # Claude Orchestrate - Vision Document
 
 ## Mission Statement
 
-Create an intelligent orchestration system that manages context, documentation, and multi-agent coordination for game development projects, allowing developers to focus on creation while the system handles knowledge management, bug tracking, and session continuity.
+Create a multi-agent orchestration system running in WezTerm where multiple Claude agents work together to support long-term game development projects. The main agent handles user interaction while helper agents monitor, support, and ensure adherence to requirements, workflows, and conventions over extended development periods.
 
-## Core Problems We're Solving
+## Current Architecture Plan
 
-### 1. Context Overflow Crisis
-**Problem**: LLM sessions fill up, causing:
-- Loss of critical knowledge mid-session
-- Inability to complete complex tasks
-- Manual intervention to salvage work
-- Repeated work across sessions
-
-**Current Reality**: Projects larger than single session context become unmanageable
-
-### 2. Rule & Behavior Drift
-**Problem**: LLMs gradually deviate from established patterns:
-- Forgets project-specific rules
-- Reverts to "standard practices" instead of project APIs
-- Loses understanding of custom architecture
-- Inconsistent behavior across sessions
-
-### 3. Documentation Chaos
-**Problem**: Current 7-tier system has issues:
-- Too rigid for some needs
-- Documents become stale/incorrect
-- Errors propagate through handovers
-- Manual maintenance overhead
-- Not all tiers equally useful
-
-### 4. Bug Marathon Syndrome
-**Problem**: Simple bugs taking 20+ sessions because:
-- Lost context about previous attempts
-- No memory of what didn't work
-- Missing understanding of system interactions
-- Fragmented knowledge across sessions
-
-### 5. Multi-Agent Coordination
-**Problem**: Need parallel processing but:
-- Tmux is too chaotic to manage
-- Message passing loses data
-- No unified state management
-- Agents interfere with each other
-
-## Rethinking Documentation Tiers
-
-### Current 7-Tier System Analysis
-
-| Tier | Current Purpose | Problems | Alternative Tool? |
-|------|----------------|----------|-------------------|
-| **Design** | Vision, UX specs | Works well, needs immutability | Keep as markdown, version controlled |
-| **SystemSpec** | Engine-agnostic schemas | Often outdated | Could be code-as-spec? |
-| **Technical** | Implementation details | Too broad, mixes concerns | Split into API docs + Architecture |
-| **Execution** | Task guides | Overlaps with Task tier | Merge with Tasks or remove |
-| **Task** | Specific work items | Better in task tracker | **→ YouTrack/GitHub Issues** |
-| **Status** | Progress, handovers | Critical but manual | Automate with hooks |
-| **Knowledge Base** | Project understanding | Not well integrated | **→ Vector DB or Notebook LM?** |
-
-### Proposed Hybrid Architecture
+### Core System Design
 
 ```
-Project Knowledge System
-├── Immutable Core (Git)
-│   ├── Vision & Design docs
-│   ├── Architecture decisions
-│   └── API Contracts
+WezTerm Environment
+├── Main Agent (User Interaction)
+│   ├── Primary development work
+│   ├── User communication
+│   └── Task execution
 │
-├── Task Management (YouTrack/GitHub)
-│   ├── Features & Epics
-│   ├── Bugs with full context
-│   ├── Task dependencies
-│   └── Progress tracking
+├── Helper Agents (Support & Monitoring)
+│   ├── Convention enforcement
+│   ├── Workflow monitoring
+│   ├── Requirements validation
+│   ├── Documentation maintenance
+│   └── Quality assurance
 │
-├── Living Knowledge (Vector DB/Notebook LM)
-│   ├── Code patterns & examples
-│   ├── Decision history
-│   ├── Bug solutions
-│   └── Session learnings
-│
-└── Session State (SQLite)
-    ├── Current context
-    ├── Active rules
-    ├── Recent decisions
-    └── Message queue
+└── Optional Orchestrator Agent
+    ├── Task coordination
+    ├── Agent management
+    └── System oversight
 ```
 
-## Architecture Components
+### Communication Architecture
 
-### 1. Context Guardian
-**Purpose**: Prevent context overflow
-**Implementation**: Python hooks monitoring token usage
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Main Agent    │    │  Helper Agent 1 │    │  Helper Agent N │
+└────────┬────────┘    └────────┬────────┘    └────────┬────────┘
+         │                      │                      │
+         └──────────────────────┼──────────────────────┘
+                                │
+                     ┌──────────▼──────────┐
+                     │    MCP Server       │
+                     │   (Registration     │
+                     │   & Communication)  │
+                     └──────────┬──────────┘
+                                │
+                     ┌──────────▼──────────┐
+                     │   SQLite Database   │
+                     │  (Context Sharing   │
+                     │   & State Storage)  │
+                     └─────────────────────┘
+
+Background Polling Layer (Non-Blocking)
+├── Polls MCP for updates
+├── Monitors agent status (busy/free)
+├── Handles message urgency
+│   ├── Non-urgent: Wait until agent free
+│   └── Urgent: Interrupt agent immediately
+└── Injects notifications to agents
+```
+
+## Breakthrough Technology Components
+
+### 1. ✅ MCP Server Foundation
+**Purpose**: Central communication hub for all agents
+**Status**: Working implementation in guardian/mcp-server/
 **Features**:
-- Real-time token counting
-- Multi-level warnings (70%, 80%, 90%)
-- Automatic checkpointing
-- Emergency handover at 90%
+- Agent registration and discovery
+- Message passing between agents
+- SQLite database integration
+- Persistent state management
 
-### 2. Rule Enforcer
-**Purpose**: Maintain behavioral consistency
-**Approach**: Micro-rules with context injection
+### 2. ✅ Non-Blocking Communication Layer
+**Purpose**: Prevent agents from blocking during communication
+**Implementation**: Background polling + message injection
+**Components**:
+- **Background Polling**: Separate process monitors MCP for updates
+- **Message Injection**: Injects notifications into agent terminals
+- **Agent Status Monitoring**: Tracks busy/free state (TO BE IMPLEMENTED)
+- **Urgency Handling**: Routes messages based on priority (TO BE IMPLEMENTED)
+
+### 3. ✅ SQLite Context Sharing
+**Purpose**: Share context and state between all agents
+**Implementation**: Central database accessible via MCP
 **Features**:
-- Immutable core rules
-- Context-specific rule selection
-- Periodic rule reminders
-- Drift detection & correction
+- Session state persistence
+- Inter-agent message history
+- Shared project context
+- Task coordination data
 
-Tool: brain/rule_enforcer.py - The engine
-Rules: brain/rules/subfolder/*.yaml - Separate, visible, modular
-Several Rule Sets: naming, documentation, core, code, etc.
-Hook: For periodic injection
+### 4. 🎯 Agent Status Awareness (PLANNED)
+**Purpose**: Intelligent message routing based on agent availability
+**Components**:
+- **Busy Detection**: Monitor when agents are actively working
+- **Message Queue**: Hold non-urgent messages for busy agents
+- **Interrupt Capability**: Force urgent messages through immediately
+- **Status Broadcasting**: Keep all agents aware of system state
 
-Rules are defined ONCE in YAML files (brain/rules/)
-RuleEnforcer reads these YAML files
-Hooks just call the RuleEnforcer (no duplicate rules!)
-
-### 3. Knowledge Orchestrator
-**Purpose**: Manage distributed knowledge
-**Tools Integration**:
-- **Markdown**: Immutable design docs
-- **YouTrack**: Tasks, bugs, progress
-- **Vector DB**: Searchable knowledge
-- **SQLite**: Session state, messages
-- **Notebook LM**: Complex knowledge synthesis?
-
-### 4. Multi-Agent Coordinator
-**Purpose**: Enable parallel work without chaos
-**Design Philosophy**:
-- Agents share data, not context
-- Message queue in SQLite
-- Each agent has focused role
-- Central orchestrator manages conflicts
-
-### 5. Bug Hunter Mode
-**Purpose**: Focused debugging with full history
+### 5. 🔮 Long-Term Memory (FUTURE)
+**Purpose**: Vector database for accumulated project knowledge
+**Implementation**: Integration with existing MCP/SQLite system
 **Features**:
-- Isolated context for specific bug
-- Full history of attempts
-- Related code & decisions
-- YouTrack integration for tracking
+- Semantic search across all sessions
+- Pattern recognition in development
+- Solution library accumulation
+- Cross-project learning
 
-## Open Questions for Discussion
+## Agent Roles & Responsibilities
 
-### Documentation Strategy
-1. **Should we abandon the 7-tier system entirely?**
-   - Keep only what works (Design, Status)?
-   - Use specialized tools per need?
-   
-2. **Notebook LM Integration?**
-   - Could it maintain project knowledge?
-   - How would we integrate it?
-   - Worth the complexity?
+### Main Agent
+**Primary Role**: User interaction and development work
+**Responsibilities**:
+- Handle all user commands and requests
+- Execute primary development tasks
+- Coordinate with helper agents when needed
+- Maintain session continuity
 
-3. **Vector DB Selection**
-   - Local ChromaDB for privacy?
-   - Pinecone for power?
-   - Simple embedding search sufficient?
+### Helper Agents (Multiple)
+**Primary Role**: Support and monitoring
+**Specific Responsibilities**:
 
-### Tool Choices
-1. **Bug Tracking**: YouTrack vs GitHub Issues vs Linear?
-   - YouTrack: Powerful but complex
-   - GitHub: Simple but limited
-   - Linear: Modern but another tool
+#### Convention Enforcer Agent
+- Monitor for naming convention violations
+- Ensure file organization standards
+- Validate documentation structure
+- Report deviations to main agent
 
-2. **Memory System**: Mem0 vs Custom vs Notebook LM?
-   - Mem0: Ready-made but black box
-   - Custom: Full control but more work
-   - Notebook LM: Powerful but external
+#### Workflow Monitor Agent
+- Track adherence to defined processes
+- Validate task completion criteria
+- Monitor project phase transitions
+- Ensure quality gates are met
 
-3. **Agent Communication**
-   - SQLite message queue (simple, reliable)
-   - Redis pub/sub (fast but complex)
-   - File-based (primitive but debuggable)
+#### Requirements Validator Agent
+- Check implementation against requirements
+- Monitor scope creep and changes
+- Validate acceptance criteria
+- Report requirement conflicts
 
-### Workflow Patterns
-1. **Parallel Agents**: When and how?
-   - Always run doc agent parallel?
-   - Spawn specialized agents on demand?
-   - Fixed set vs dynamic spawning?
+#### Documentation Maintenance Agent
+- Keep documentation current and accurate
+- Generate automated status reports
+- Maintain knowledge base
+- Update handover documents
 
-2. **Context Switching**
-   - Hard cut at 90% context?
-   - Gradual handover process?
-   - Multiple small contexts vs one large?
+### Orchestrator Agent (Optional)
+**Primary Role**: System coordination (if implemented)
+**Responsibilities**:
+- Manage agent spawning and lifecycle
+- Coordinate complex multi-agent tasks
+- Handle system-level decisions
+- Provide oversight and control
 
-3. **User Interaction**
-   - How much automation vs control?
-   - Approval gates where?
-   - Visibility into agent actions?
+## Technical Implementation
 
-## The Problem: Documentation Permanence vs. Agent Feedback
-### Current Issue
-Agents generate two types of documentation that are currently mixed together:
+### WezTerm Environment
+**Why WezTerm**: 
+- Superior terminal multiplexing
+- Professional development interface
+- Tab/pane management for multiple agents
+- Visual monitoring capabilities
 
-Permanent Project Knowledge - Design decisions, architecture, handovers that must persist
-Transient Agent Reports - "I reorganized files", "I checked the index", "I fixed these bugs" - useful for immediate review but creates clutter over time
+### MCP Server (guardian/mcp-server/)
+**Technology**: Node.js with SQLite
+**Features**:
+- Agent registration endpoint
+- Message routing system
+- Database abstraction layer
+- Real-time communication handling
 
-### The Dilemma
+### Background Polling Layer
+**Implementation**: Python/Node.js background processes
+**Architecture**:
+```python
+class BackgroundPoller:
+    def monitor_mcp_updates(self):
+        # Continuously poll MCP for new messages
+        
+    def check_agent_status(self, agent_id):
+        # Determine if agent is busy or free
+        
+    def route_message(self, message, urgency):
+        if urgency == "high" or agent.is_free():
+            self.inject_notification(agent_id, message)
+        else:
+            self.queue_message(agent_id, message)
+```
 
-Users need visibility: When an agent does work, users want to review what happened
-Projects need cleanliness: These reports quickly clutter the documentation
-Knowledge must persist: Important findings need to be incorporated into permanent docs
-Reports become stale: After review, agent reports lose value rapidly
+### SQLite Database Schema
+```sql
+-- Agent registration and status
+CREATE TABLE agents (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    role TEXT,
+    status TEXT, -- 'busy', 'free', 'offline'
+    last_seen TIMESTAMP
+);
 
-### Future Vision Issues
-In a multi-agent system with UI monitoring:
+-- Inter-agent messages
+CREATE TABLE messages (
+    id INTEGER PRIMARY KEY,
+    from_agent TEXT,
+    to_agent TEXT,
+    content TEXT,
+    urgency TEXT, -- 'low', 'medium', 'high'
+    delivered BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP
+);
 
-Multiple agents generating reports simultaneously
-Sub-agents creating their own feedback documents
-Monitoring agents producing status reports
-All of this would exponentially increase documentation clutter
+-- Shared context and state
+CREATE TABLE context_store (
+    key TEXT PRIMARY KEY,
+    value TEXT,
+    agent_id TEXT,
+    timestamp TIMESTAMP
+);
+```
 
+## Development Phases
 
-### Future Vision Proposal
+### Phase 1: Agent Status Monitoring (IMMEDIATE)
+**Goal**: Implement busy/free detection for agents
+**Tasks**:
+- [ ] Design agent status detection mechanism
+- [ ] Implement status broadcasting to MCP
+- [ ] Create status monitoring dashboard
+- [ ] Test with 2-3 agents
 
-**Clear Separation**
+### Phase 2: Intelligent Message Routing (SHORT-TERM)
+**Goal**: Route messages based on urgency and agent status
+**Tasks**:
+- [ ] Implement message urgency classification
+- [ ] Build message queuing system
+- [ ] Create interrupt mechanism for urgent messages
+- [ ] Test urgency handling scenarios
 
-Docs/ = What matters next month
-agent-feedback/ = What matters today
-.orchestrator/ = What the tool needs
+### Phase 3: Helper Agent Implementation (MEDIUM-TERM)
+**Goal**: Deploy specialized helper agents
+**Tasks**:
+- [ ] Convention enforcer agent
+- [ ] Workflow monitor agent
+- [ ] Requirements validator agent
+- [ ] Documentation maintenance agent
 
-**Agent Responsibility**
-Each agent decides:
+### Phase 4: Long-Term Memory Integration (FUTURE)
+**Goal**: Add vector database for knowledge accumulation
+**Tasks**:
+- [ ] Select and integrate vector database
+- [ ] Implement semantic search
+- [ ] Create knowledge extraction from sessions
+- [ ] Build cross-session learning
 
-Is this permanent knowledge? → Docs/
-Is this temporary feedback? → agent-feedback/
-Is this operational data? → .orchestrator/
+## Success Metrics
 
+### Technical Metrics
+- ✅ **Non-blocking communication**: Agents never block waiting for responses
+- 🎯 **Agent status accuracy**: >95% correct busy/free detection
+- 🎯 **Message delivery**: <1 second for urgent, <30 seconds for normal
+- 🎯 **System stability**: 8+ hours continuous operation without issues
 
-**Lifecycle Management**
-python# Agent creates feedback
-create_feedback("agent-feedback/session-{date}/reorganizer/report.md")
+### User Experience Metrics
+- ✅ **Multi-agent coordination**: 3+ agents working simultaneously
+- 🎯 **Convention adherence**: Automated violation detection and correction
+- 🎯 **Long-term consistency**: Project standards maintained over weeks/months
+- 🎯 **Knowledge retention**: Previous session insights accessible and applied
 
-User reviews (via UI or manually)
-Extract important parts to permanent docs
-update_permanent("Docs/Status/Session_Handover.md", key_findings)
-Safe to clean: rm -rf agent-feedback/session-* # older than 7 days
+### Project Management Metrics
+- 🎯 **Requirements compliance**: Automated validation of implementation
+- 🎯 **Documentation accuracy**: Always current and conflict-free
+- 🎯 **Workflow adherence**: Process deviations caught and corrected
+- 🎯 **Quality assurance**: Consistent standards across all development
 
-**UI Integration (Future)**
-UI reads from agent-feedback/ for recent activity
-Shows alerts for new reports
-Allows one-click cleanup
-Prompts to extract important findings
+## Current Implementation Status
 
+### ✅ Completed Components
+- **MCP Server**: Working implementation with SQLite integration
+- **Basic Non-blocking**: Background polling and message injection proven
+- **WezTerm Integration**: Test environment operational
+- **Multi-agent Coordination**: 3+ agents proven working
 
-   
-   
-## Implementation Phases
+### 🎯 Active Development
+- **Agent Status Monitoring**: Design phase
+- **Message Urgency System**: Planning phase
+- **Helper Agent Framework**: Prototyping
+- **Professional UI**: WezTerm optimization
 
-### Phase 0: Foundation (Week 1)
-- [ ] Create base project structure
-- [ ] Set up SQLite for state management  
-- [ ] Import hook system from claude-template
-- [ ] Create vision tracking document
+### 📋 Planned Components
+- **Orchestrator Agent**: Architecture design needed
+- **Vector Database**: Technology selection and integration
+- **Cross-session Learning**: Knowledge extraction automation
+- **Team Collaboration**: Multi-user support
 
-### Phase 1: Context Guardian (Week 1)
-- [ ] Token counting system
-- [ ] Warning thresholds
-- [ ] Automatic checkpointing
-- [ ] Emergency handover
+## Architecture Decisions
 
-### Phase 2: Rule System (Week 2)
-- [ ] Micro-rule architecture
-- [ ] Rule injection hooks
-- [ ] Drift detection
-- [ ] Rule validation
+### ✅ Confirmed Decisions
+- **Platform**: WezTerm for professional multi-agent interface
+- **Communication**: MCP server with SQLite backend
+- **Non-blocking**: Background polling + message injection pattern
+- **Language**: Node.js for MCP, Python for background processes
+- **Database**: SQLite for simplicity and reliability
 
-### Phase 3: Knowledge Integration (Week 3)
-- [ ] YouTrack MCP setup
-- [ ] Vector DB exploration
-- [ ] Knowledge extraction from sessions
-- [ ] Search interface
+### 🎯 Current Decisions Under Development
+- **Agent Status Detection**: Method for determining busy/free state
+- **Message Urgency**: Classification and routing algorithms
+- **Helper Agent Framework**: Standard pattern for specialized agents
+- **Orchestrator Role**: Whether to implement centralized coordination
 
-### Phase 4: Multi-Agent (Week 4+)
-- [ ] Agent spawning system
-- [ ] Message queue
-- [ ] Coordination protocols
-- [ ] Conflict resolution
+### 📋 Future Decisions
+- **Vector Database**: Local vs cloud, technology selection
+- **Knowledge Extraction**: Automated vs manual promotion of insights
+- **Team Features**: Multi-user collaboration approach
+- **Cross-project**: Learning and pattern sharing between projects
 
-## Success Criteria
+## Integration with Existing Systems
 
-### Must Have (MVP)
-- ✓ Prevents context overflow
-- ✓ Maintains rules across sessions
-- ✓ Tracks bugs with context
-- ✓ Automates session handovers
+### Guardian System (guardian/)
+- **Current**: Next-generation MCP-based architecture
+- **Status**: Working foundation with test validation
+- **Evolution**: Becoming the main implementation platform
 
-### Should Have (v1.0)
-- ✓ Parallel documentation agent
-- ✓ Vector search for knowledge
-- ✓ YouTrack integration
-- ✓ Multi-agent coordination
+### Claude-Orchestrator (claude-orchestrator/)
+- **Current**: Stable working system with proven capabilities
+- **Status**: Legacy system with valuable patterns
+- **Future**: Knowledge extraction and migration to guardian/
 
-### Nice to Have (Future)
-- ✓ Notebook LM integration
-- ✓ Visual progress tracking
-- ✓ Team collaboration
-- ✓ Cross-project learning
+### Project Documentation
+- **Current**: Organized in docs/ with clear conventions
+- **Integration**: Helper agents will maintain and validate
+- **Enhancement**: Automated accuracy and consistency checking
 
-## Technical Decisions
+## Long-Term Vision
 
-### Confirmed
-- **Language**: Python (you understand it, good ecosystem)
-- **State DB**: SQLite (simple, reliable, portable)
-- **Base Structure**: Extend claude-template hooks
-- **Unity Bridge**: Your existing MCP implementation
+### Project Sustainability
+**Goal**: Maintain large game development projects over months/years
+**Approach**: 
+- Helper agents prevent drift and decay
+- Automated convention enforcement
+- Continuous knowledge accumulation
+- Long-term memory and pattern recognition
 
-### Under Consideration
-- **Bug Tracker**: YouTrack vs GitHub Issues
-- **Vector DB**: Local vs Cloud
-- **Memory System**: Mem0 vs Custom
-- **Agent Communication**: SQLite vs Redis vs Files
-- **Persistent Monitor or Meta-Agent**: monitors the orchestrator, session, and can provide overview to the user what is going on with several agents running in parallel
+### Multi-Project Learning
+**Goal**: Accumulate wisdom across multiple projects
+**Approach**:
+- Vector database with cross-project search
+- Pattern library of successful solutions
+- Automated application of proven approaches
+- Continuous improvement of helper agents
 
-### Rejected
-- **Tmux Orchestrator**: Too chaotic for your needs
-- **Claude-Flow**: Too complex, not game-focused
-- **Pure sub-agents**: Context sharing issues
-
-## Next Steps
-
-1. **Immediate**: Build Context Guardian (prevents data loss)
-2. **This Week**: Implement basic rule system
-3. **Evaluate**: Test YouTrack MCP for bug tracking
-4. **Experiment**: Try vector search for knowledge retrieval
-5. **Document**: Keep updating this vision as we learn
-
-## Discussion Topics
-
-### For Next Session
-1. **Documentation Tiers**: Which to keep, which to replace?
-2. **Notebook LM**: Worth exploring for knowledge synthesis?
-3. **Visual Interface**: Terminal only or add web UI later?
-4. **Team Features**: Solo focus or plan for collaboration?
-
-### Open Research
-1. How does Notebook LM API work?
-2. Can we extract knowledge from Claude sessions automatically?
-3. Best vector DB for local game dev knowledge?
-4. Optimal agent communication patterns?
+### Team Collaboration
+**Goal**: Support multiple developers on same project
+**Approach**:
+- Shared MCP server with multi-user support
+- Role-based agent permissions
+- Conflict resolution mechanisms
+- Collaborative knowledge building
 
 ---
 
-## Notes Section
+## Current Challenges
 
-### User Feedback Integration Needed
-- How do you currently use YouTrack?
-- What's your experience with Notebook LM?
-- Which documentation tiers cause most friction?
-- What's your ideal bug tracking workflow?
+### Technical Challenges
+1. **Agent Status Detection**: Reliable method to determine when agents are busy
+2. **Message Urgency Classification**: Automated priority determination
+3. **Context Synchronization**: Ensuring all agents have current project state
+4. **Performance**: Maintaining responsiveness with multiple active agents
 
-### Technical Explorations
-- Test ChromaDB for local vector search
-- Evaluate YouTrack MCP capabilities
-- Benchmark token counting accuracy
-- Prototype message queue options
+### Implementation Challenges
+1. **Helper Agent Specialization**: Defining clear roles and boundaries
+2. **User Experience**: Balancing automation with user control
+3. **System Complexity**: Managing increasing number of components
+4. **Migration Strategy**: Moving from claude-orchestrator to guardian
 
-### Inspiration from User's Systems
-- AWMS vision: Parallel documentation concept
-- 7-tier system: Good structure, needs modernization  
-- Hook system: Excellent foundation to build on
-- Unity MCP: Already solved, can integrate
+### Long-term Challenges
+1. **Knowledge Accumulation**: Preventing information overload
+2. **Agent Coordination**: Avoiding conflicts between helper agents
+3. **System Evolution**: Adapting to changing development needs
+4. **Maintenance**: Keeping the system itself well-maintained
 
 ---
 
-*This is a living document. Update as we learn and decide.*
+*This vision represents the current architecture plan based on proven breakthrough technology and real implementation experience. The focus is on practical, working multi-agent coordination with intelligent support systems.*
+
+**Last Updated**: August 2025 - Reflects current MCP-based architecture with WezTerm multi-agent plan
