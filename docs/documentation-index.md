@@ -2,216 +2,237 @@
 project: claude-orchestrate
 type: convention
 title: "Documentation Index - Claude Orchestrator/Guardian Development"
-version: 2025-08-14
+version: 2025-08-14-restructured
 status: CURRENT
 summary:
-  - Complete project documentation navigation
-  - Parallel development: claude-orchestrator (stable) + guardian (next-gen)
-  - Breakthrough findings prominently featured
-  - Clear relevance indicators for all documents
-tags: [navigation, documentation, architecture, breakthrough]
+  - Complete project documentation navigation after restructuring
+  - Streamlined technical documentation with specialized files
+  - Clear session startup path and current development priorities
+  - Proper organization replacing duplicate-heavy architecture.md
+tags: [navigation, documentation, architecture, restructured]
 ---
 
 # Documentation Index - Claude Orchestrator/Guardian Development
 
 ## 🎯 Project Status Overview
 
-**Current Architecture**: Parallel development of two systems
-- **claude-orchestrator/**: 🟢 CURRENT - Stable working system with proven breakthroughs
-- **guardian/**: 🟡 EVOLVING - Next generation system in active development
-- **Migration Strategy**: Gradual transition preserving functionality
+**Current Architecture**: Dual-track development with working foundation
+- **claude-orchestrator/**: ✅ **WORKING DAILY** - Session tools (`/session-start`, `/session-end`)
+- **guardian/**: ✅ **FOUNDATION READY** - MCP server + non-blocking communication proven
+- **Current Priority**: Create first helper agent (convention-enforcer)
+- **Key Achievement**: Test 2 SUCCESS - Non-blocking agent communication working
 
-## 📚 Mandatory Session Reading
+## 📚 Essential Session Reading (Streamlined)
 
-**Read in this exact order before starting any work:**
+**Read in this exact order before starting work:**
 
 ### 1. Core Rules & Standards
-- [CLAUDE.md](../CLAUDE.md) - **FIRST** - Core interaction rules and hierarchy
-- [docs/conventions.md](conventions.md) - Project standards and file naming conventions
-- [docs/read-first.md](read-first.md) - Complete session checklist and understanding requirements
+- **[CLAUDE.md](../CLAUDE.md)** - Core interaction rules and hierarchy ⭐ **FIRST**
+- **[docs/conventions.md](conventions.md)** - Project standards and naming conventions
+- **[docs/read-first.md](read-first.md)** - **UPDATED** Complete session checklist
 
-### 2. Current Session Context  
-- [docs/status/handover-next.md](status/handover-next.md) - Latest session handover and current state
-- [docs/status/users-todos.md](status/users-todos.md) - Master TODO list with user priorities
+### 2. Current Session Context
+- **[docs/status/handover-next.md](status/handover-next.md)** - Latest session state and priorities
+- **[docs/status/users-todos.md](status/users-todos.md)** - Master TODO list with current focus
 
-### 3. Core Architecture Understanding
-- [docs/design/vision.md](design/vision.md) - **ENHANCED** - Project goals with breakthrough integration
-- [docs/technical/architecture.md](technical/architecture.md) - System design and folder structure
-- [claude-orchestrator/__proposed_refactoring/WHY.md](../claude-orchestrator/__proposed_refactoring/WHY.md) - **CRITICAL** - Deep problem analysis
+### 3. Core System Understanding (Restructured)
+- **[docs/technical/architecture.md](technical/architecture.md)** - **CONDENSED** Core overview (~200 lines)
+- **[docs/technical/implementation-status.md](technical/implementation-status.md)** - **NEW** Current development state
 
-## 🎉 Breakthrough Documentation
+### 4. Specialized Technical Documentation (New Structure)
+- **[docs/technical/helper-agent-patterns.md](technical/helper-agent-patterns.md)** - **NEW** Claude agent + markdown patterns
+- **[docs/technical/mcp-server-details.md](technical/mcp-server-details.md)** - **NEW** MCP implementation details
+- **[docs/technical/migration-strategy.md](technical/migration-strategy.md)** - **NEW** Detailed migration planning
+- **[docs/technical/system-flows.md](technical/system-flows.md)** - **NEW** Coordination and flow patterns
 
-### The Core Discovery (🟢 CURRENT)
-- [claude-orchestrator/__proposed_refactoring/BREAKTHROUGH_CLAUDE_PARALLELIZATION.md](../claude-orchestrator/__proposed_refactoring/BREAKTHROUGH_CLAUDE_PARALLELIZATION.md) - **THE SOLUTION** - True parallel Claude execution proven
-- [claude-orchestrator/__proposed_refactoring/ORCHESTRATOR_BREAKTHROUGH.md](../claude-orchestrator/__proposed_refactoring/ORCHESTRATOR_BREAKTHROUGH.md) - Complete system documentation
+## 📊 Documentation Restructuring Summary
 
-### Architecture Decisions (🟢 CURRENT)
-- [claude-orchestrator/__proposed_refactoring/GUARDIAN_ARCHITECTURE_DECISION.md](../claude-orchestrator/__proposed_refactoring/GUARDIAN_ARCHITECTURE_DECISION.md) - Architecture with hybrid approach
-- [claude-orchestrator/__proposed_refactoring/PARALLELIZATION_APPROACHES_COMPARISON.md](../claude-orchestrator/__proposed_refactoring/PARALLELIZATION_APPROACHES_COMPARISON.md) - Complete analysis of all approaches
+### ✅ **Completed Changes**
+| Old Structure | New Structure | Benefit |
+|---------------|---------------|---------|
+| **architecture.md** (880 lines) | **architecture.md** (200 lines) + 5 specialized docs | 77% reduction in core reading |
+| Massive duplicates | Single source per concept | Clear, accurate information |
+| Fantasy implementations | Working codebase alignment | Reflects actual system |
+| Mixed concerns | Specialized focus areas | Targeted information access |
 
-### Implementation Guides (🟢 CURRENT)
-- [claude-orchestrator/__proposed_refactoring/README.md](../claude-orchestrator/__proposed_refactoring/README.md) - Clean overview of the solution
-- [claude-orchestrator/__proposed_refactoring/WHY.md](../claude-orchestrator/__proposed_refactoring/WHY.md) - Complete problem analysis
+### 🎯 **Reading Path Optimization**
+- **Session startup**: ~400 lines (was 1000+ lines)
+- **Specialized work**: Deep docs available when needed
+- **Current priorities**: Clearly highlighted in restructured docs
+- **Cross-references**: Clear navigation between related documents
 
-### Technical Deep Dives (🟢 CURRENT)
-- [claude-orchestrator/__proposed_refactoring/CLAUDE_CONTEXT_SHARING.md](../claude-orchestrator/__proposed_refactoring/CLAUDE_CONTEXT_SHARING.md) - Agent context sharing methods
-- [claude-orchestrator/__proposed_refactoring/CLAUDE_MONITORING_CAPABILITIES.md](../claude-orchestrator/__proposed_refactoring/CLAUDE_MONITORING_CAPABILITIES.md) - Monitoring and observation capabilities
+## 🚀 Working Implementation Status
 
-### Vision Updates (🟢 CURRENT)
-- [claude-orchestrator/__proposed_refactoring/WHY.md](../claude-orchestrator/__proposed_refactoring/WHY.md) - **MANDATORY** - Complete problem analysis and requirements
-- [docs/Archive/vision-update-breakthrough-archived.md](Archive/vision-update-breakthrough-archived.md) - 📁 Archived - Now integrated into main vision.md
+### Foundation Complete ✅
+| Component | Status | Location | Evidence |
+|-----------|--------|----------|----------|
+| **MCP Server** | ✅ Working | `guardian/mcp-server/` | Test 2 success |
+| **Non-blocking Communication** | ✅ Proven | `utils/monitor_and_inject.sh` | Agents stay responsive |
+| **Agent Registration** | ✅ Working | MCP tools | Agents register/discover |
+| **Background Monitoring** | ✅ Proven | Background scripts | Message injection works |
+| **WezTerm Integration** | ✅ Tested | Test environment | Multi-pane coordination |
 
-## 💻 Working Implementation
+### Current Development Priority 🎯
+- **Next Task**: Create convention-enforcer helper agent
+- **Approach**: Claude instance + markdown instructions
+- **Pattern**: Request-response coordination via MCP
+- **Goal**: Validate helper agent framework effectiveness
 
-### Current Stable System (claude-orchestrator/)
-- [claude-orchestrator/README.md](../claude-orchestrator/README.md) - Tool overview and quick start
-- [claude-orchestrator/orchestrator-tools/](../claude-orchestrator/orchestrator-tools/) - **Working implementation**
-  - `orchestrator_system.py` - Core orchestrator implementation  
-  - `start_orchestrator.sh` - Launch script
-  - `orchestrator_tmux_visual.sh` - Visual monitoring dashboard
-  - `web_dashboard.py` - Web interface (optional)
-  - `orchestrator_ui.html` - UI mockup
-
-### Next Generation System (guardian/)
-- [guardian/README.md](../guardian/README.md) - Guardian system overview
-- [guardian/HYBRID_ARCHITECTURE.md](../guardian/HYBRID_ARCHITECTURE.md) - Non-blocking multi-agent approach
-- [guardian/mcp-server/](../guardian/mcp-server/) - MCP server implementation
-- [guardian/tests/](../guardian/tests/) - Working test examples and validation
+### Daily Tools Preserved ✅
+- **Session Management**: `/session-start`, `/session-end` in claude-orchestrator/
+- **Handover System**: Working session continuity
+- **Context Guardian**: Token monitoring and overflow prevention
+- **Compatibility**: All current workflows continue working
 
 ## 🧪 Test Evidence & Validation
 
-### Proven Capabilities (🟢 CURRENT)
-Located in `claude-orchestrator/__proposed_refactoring/test_evidence/`:
-- `01_run_in_background_SUCCESS.md` - Proof of non-blocking execution
-- `01_chain_communication_SUCCESS.md` - Agent chain communication proven
-- `02_output_reading_SUCCESS.md` - Real-time output monitoring
-- `04_file_signaling_SUCCESS.md` - File-based coordination working
+### Proven Capabilities ✅
+**Test 2 - Non-Blocking Communication SUCCESS**:
+- **Location**: `guardian/tests/test2-output-reading/`
+- **Evidence**: `claude-orchestrator/__proposed_refactoring/test_evidence/02_output_reading_SUCCESS.md`
+- **Achievement**: Agent 1 stayed responsive while Agent 2 analyzed webpage
+- **Key Finding**: Background monitoring + message injection = non-blocking coordination
 
-### Identified Limitations (🟢 CURRENT)
-- `02_task_tool_BLOCKS.md` - Task tool blocking behavior documented
-- `03_mcp_approach_analysis.md` - MCP complexity analysis
+### Earlier Test Results ✅
+- **Test 1**: Chain communication (Agent 1 → Agent 2 → Agent 3 → Agent 2 → Agent 1)
+- **Parallel execution**: `run_in_background=True` enables true parallel Claude agents
+- **File coordination**: Background process coordination proven
 
-## 📋 Project Documentation
+## 📁 Current Project Structure
 
-### Design Documents (🟢 CURRENT)
-- [docs/design/vision.md](design/vision.md) - **ENHANCED** - Complete project vision with breakthrough integration
-  - Core problems and solutions
-  - Architecture decisions with proven results
-  - Implementation phases updated with current status
-  - Strategic shift from theory to working system
-
-### Technical Documents (🟢 CURRENT)
-- [docs/technical/architecture.md](technical/architecture.md) - System design and structure
-  - Tool structure (claude-orchestrator + guardian)
-  - Installation and usage patterns
-  - Component relationships
-- [docs/technical/agent-feedback-system.md](technical/agent-feedback-system.md) - Documentation strategy
-  - Permanent vs transient documentation
-  - Lifecycle management approach
-  - Agent feedback separation
-
-### Status & Progress (🟢 CURRENT)
-- [docs/status/handover-next.md](status/handover-next.md) - **Current session entry point**
-- [docs/status/users-todos.md](status/users-todos.md) - **Master TODO list** 
-  - Immediate, short-term, medium-term, and long-term tasks
-  - Research topics and known issues
-  - Organized by priority and timeframe
-  - Success metrics and completed items
-
-### Template & Resources (🟢 CURRENT)
-- [claude-orchestrator/resource-library/documents/handovers/Session_Handover_Template.md](../claude-orchestrator/resource-library/documents/handovers/Session_Handover_Template.md) - Session handover template
-
-## 🔧 Tool Components
-
-### Claude-Orchestrator Structure (🟢 CURRENT - Stable)
+### Guardian System (Active Development)
 ```
-claude-orchestrator/
-├── brain/                  # Core orchestration logic
-├── short-term-memory/      # Session state (SQLite)
-├── long-term-memory/       # Persistent knowledge  
-├── workflows/              # Project-type specific rules
-├── resource-library/       # Templates and components
-├── tools/                  # Utilities (Context Guardian)
-├── bridges/                # External integrations
-└── orchestrator-tools/     # Working implementation
+guardian/                           # 🎯 Current work location
+├── mcp-server/                    # ✅ Working Node.js + SQLite coordination
+├── utils/                         # ✅ Working monitor_and_inject.sh
+├── tests/                         # ✅ Test 2 success evidence
+└── helper-agents/                 # 🎯 Next: Create convention-enforcer
+    └── convention-enforcer/       # 🎯 To be created
+        ├── instructions.md        # Claude agent instructions
+        ├── naming-rules.md        # Specific rules to enforce
+        └── .claude/settings.json  # MCP configuration
 ```
 
-### Guardian Structure (🟡 EVOLVING - Next Generation)
+### Claude-Orchestrator (Preserved Working)
 ```
-guardian/
-├── mcp-server/            # Core MCP server with SQLite
-├── tests/                 # Working test examples
-└── utils/                 # Helper utilities
-```
-
-## 🚀 Quick Navigation
-
-### For New Sessions
-1. ✅ Read mandatory documents (order listed above)
-2. ✅ Check current tasks: [users-todos.md](status/users-todos.md)
-3. ✅ Review breakthrough: [BREAKTHROUGH_CLAUDE_PARALLELIZATION.md](../claude-orchestrator/__proposed_refactoring/BREAKTHROUGH_CLAUDE_PARALLELIZATION.md)
-4. ✅ Understand current system: [architecture.md](technical/architecture.md)
-
-### For Development Work
-**Current Stable System:**
-```bash
-cd claude-orchestrator/orchestrator-tools
-./start_orchestrator.sh
+claude-orchestrator/               # ✅ Continue using during transition
+├── orchestrate.py                # ✅ Working coordination script
+├── brain/                        # ✅ Session management
+├── tools/                        # ✅ Context Guardian
+└── resource-library/             # ✅ Templates (to extract to helper agents)
 ```
 
-**Next Generation Testing:**
-```bash
-cd guardian/tests
-./setup_test2.sh
+### Documentation (Restructured)
+```
+docs/
+├── read-first.md                 # ✅ Updated session startup guide
+├── conventions.md                # ✅ Project standards
+├── technical/                    # ✅ Restructured technical docs
+│   ├── architecture.md           # ✅ Condensed core overview
+│   ├── implementation-status.md  # ✅ Current development state
+│   ├── helper-agent-patterns.md  # ✅ Claude agent + markdown patterns
+│   ├── mcp-server-details.md     # ✅ MCP implementation specifics
+│   ├── migration-strategy.md     # ✅ Detailed migration planning
+│   └── system-flows.md           # ✅ Coordination patterns
+└── status/                       # ✅ Session handovers and TODOs
 ```
 
-### For Understanding the Breakthrough
-1. Start with: [BREAKTHROUGH_CLAUDE_PARALLELIZATION.md](../claude-orchestrator/__proposed_refactoring/BREAKTHROUGH_CLAUDE_PARALLELIZATION.md)
-2. Full system: [ORCHESTRATOR_BREAKTHROUGH.md](../claude-orchestrator/__proposed_refactoring/ORCHESTRATOR_BREAKTHROUGH.md)
-3. Implementation: [guardian/README.md](../guardian/README.md)
+## 🔧 Quick Navigation by Work Type
 
-## 📂 Archive & Legacy
+### 🎯 Current Session Priority (Helper Agent Development)
+1. **Start here**: [helper-agent-patterns.md](technical/helper-agent-patterns.md)
+2. **Coordination details**: [system-flows.md](technical/system-flows.md)
+3. **MCP tools**: [mcp-server-details.md](technical/mcp-server-details.md)
+4. **Working example**: `guardian/tests/test2-output-reading/`
 
-### Temporary Workspace (🟡 EVOLVING)
-- `claude-orchestrator/__proposed_refactoring/` - **Breakthrough workspace**
-  - Contains all discovery documentation
-  - To be extracted and reorganized as guardian/ matures
-  - Critical findings preserved but location temporary
+### 🔧 MCP Server Development
+1. **Implementation details**: [mcp-server-details.md](technical/mcp-server-details.md)
+2. **Current status**: [implementation-status.md](technical/implementation-status.md)
+3. **Working code**: `guardian/mcp-server/`
 
-### Project Core Files (🟢 CURRENT - Test Environment)
-- `CLAUDE.md` - Claude interaction rules
-- `prime.md` - Project primer
-- `.claude/` - Hooks and configuration
+### 📋 Migration Planning
+1. **Strategy overview**: [migration-strategy.md](technical/migration-strategy.md)
+2. **Current state**: [implementation-status.md](technical/implementation-status.md)
+3. **Architecture transition**: [architecture.md](technical/architecture.md)
 
-## 🎯 Key Success Metrics
+### 🚀 Session Management (Daily Use)
+1. **Working tools**: `claude-orchestrator/` (/session-start, /session-end)
+2. **Handover template**: `claude-orchestrator/resource-library/documents/handovers/`
+3. **Status tracking**: [status/users-todos.md](status/users-todos.md)
 
-### Achievements ✅
-- **Parallel orchestration SOLVED** - Multiple Claude agents working simultaneously
-- **Non-blocking execution PROVEN** - Main orchestrator stays responsive
-- **Visual monitoring WORKING** - Real-time visibility into all agents
-- **File-based coordination FUNCTIONAL** - Agents communicate through files
-- **Context sharing AVAILABLE** - Session resuming enables knowledge transfer
+## 📚 Reference Documentation
+
+### Historical Context (Important Background)
+- **[claude-orchestrator/__proposed_refactoring/WHY.md](../claude-orchestrator/__proposed_refactoring/WHY.md)** - Deep problem analysis
+- **[docs/design/vision.md](design/vision.md)** - Project goals and strategic direction
+- **Breakthrough documentation**: `claude-orchestrator/__proposed_refactoring/` (proven solutions)
+
+### Legacy Architecture (Pre-Restructuring)
+- **Old architecture.md**: Had 880 lines with massive duplicates
+- **Fantasy implementations**: Python helper classes that never existed
+- **Mixed concerns**: Communication + agents + flows all in one file
+- **Result**: Difficult session startup, unclear priorities
+
+## 🎯 Success Metrics
+
+### Documentation Restructuring Success ✅
+- **Reading time reduced**: 77% less essential reading for session startup
+- **Information clarity**: Each concept documented once in appropriate location
+- **Current priorities**: Clear focus on helper agent development
+- **Accuracy**: Documentation reflects working codebase
+
+### Technical Achievement ✅
+- **Non-blocking communication**: Test 2 proven successful
+- **MCP coordination**: Reliable message routing between agents
+- **Working foundation**: Ready for helper agent implementation
+- **Preserved productivity**: claude-orchestrator/ continues working
 
 ### Next Milestones 🎯
-- **Guardian system maturity** - Complete guardian/ implementation
-- **Migration strategy** - Smooth transition from claude-orchestrator
-- **Professional UI** - Enhanced user experience
-- **Documentation consolidation** - Extract findings from __proposed_refactoring
+- **First helper agent working**: Convention-enforcer with markdown instructions
+- **Request-response pattern proven**: Main agent ↔ helper agent coordination
+- **Helper agent framework validated**: Patterns work with real Claude agents
+- **Migration readiness**: Guardian can start replacing claude-orchestrator features
 
-## 🔄 Document Maintenance
+## 🔄 Current Development Focus
 
-### Relevance Status Legend
-- **🟢 CURRENT**: Actively maintained, use for new work
-- **🟡 EVOLVING**: Valid but being improved/replaced  
-- **🔴 DEPRECATED**: Historical reference only
-- **📁 ARCHIVED**: Keep for context but don't use
+### Immediate Tasks (Next 1-2 Sessions)
+1. **Create convention-enforcer helper agent**
+   - Directory structure with markdown instructions
+   - Test request-response pattern
+   - Validate helper guidance quality
 
-### Update Cycle
-- **Each session**: Update handover-next.md and status documents
-- **Major milestones**: Review and update architecture/vision documents
-- **Breakthrough discoveries**: Document immediately, reorganize later
-- **Migration events**: Archive old, promote new, update references
+2. **Fix monitor duplicate notifications**
+   - Add duplicate detection to monitor_and_inject.sh
+   - Test with multiple rapid messages
+
+3. **Document helper agent patterns**
+   - Validate instruction templates work
+   - Test with real project files
+
+### Short-term Goals (Next 2-3 Sessions)
+- **Additional helper agents**: workflow-monitor, documentation-maintainer
+- **WezTerm automation**: Launch scripts for multi-agent environment
+- **Migration tools**: Extract patterns from claude-orchestrator to markdown
 
 ---
-*This index provides complete navigation for the dual-track orchestrator/guardian development.*
-*Updated: 2025-08-14 - Merged from two indexes with verified file references*
+
+## 🚀 Quick Start Commands
+
+```bash
+# Current working directory
+cd /home/klaus/game-projects/claude-orchestrate/guardian/
+
+# Check Test 2 success evidence
+ls tests/test2-output-reading/
+
+# Review MCP server status
+ls mcp-server/
+
+# Start working on helper agents
+mkdir -p helper-agents/convention-enforcer
+```
+
+---
+
+*This index reflects the restructured documentation with streamlined session startup and comprehensive specialized resources.*
+*Updated: 2025-08-14 - Post-restructuring with 77% reading reduction and clear current priorities.*
